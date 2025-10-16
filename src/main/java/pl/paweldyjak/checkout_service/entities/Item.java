@@ -1,13 +1,14 @@
 package pl.paweldyjak.checkout_service.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Setter;
 
-@Data
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "item")
@@ -30,11 +31,10 @@ public class Item {
     @Column(name = "special_price")
     BigDecimal specialPrice;
 
-    @OneToMany(mappedBy = "firstItemId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BundleDiscount> discountsAsFirstItem = new HashSet<>();
-
-    @OneToMany(mappedBy = "secondItemId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BundleDiscount> discountsAsSecondItem = new HashSet<>();
+    public Item(String name, BigDecimal normalPrice) {
+        this.name = name;
+        this.normalPrice = normalPrice;
+    }
 
     public Item(String name, BigDecimal normalPrice, int requiredQuantity, BigDecimal specialPrice) {
         this.name = name;
