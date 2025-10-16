@@ -14,12 +14,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers("/h2-console/**").permitAll()
+                // TODO: add authorization
+                .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated());
 
 
-        // Spring Security disables CSRF by default and sets X-Frame-Options to DENY.
-        // The following lines disable CSRF (safe for development/testing) and allow
-        // the H2 Console UI to be rendered in a same-origin iframe.
+        // Allows using h2-console
         http.csrf(CsrfConfigurer::disable);
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
