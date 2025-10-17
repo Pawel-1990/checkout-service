@@ -39,9 +39,6 @@ public class BundleDiscount {
     @Column(name = "discount_amount", nullable = false, precision = 19, scale = 2)
     private BigDecimal discountAmount;
 
-    @Column(name = "active", nullable = false)
-    private boolean active = true;
-
     public BundleDiscount(Item firstItem, Item secondItem, BigDecimal discountAmount) {
         this.firstItem = firstItem;
         this.secondItem = secondItem;

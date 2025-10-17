@@ -6,7 +6,6 @@ import pl.paweldyjak.checkout_service.dto.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dto.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dto.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
-import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemHasActiveDiscountsException;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.repository.BundleDiscountRepository;
@@ -33,7 +32,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemResponse> getAllItems() {
         return itemRepository.findAll().stream()
-                .map(itemMapper::toItemResponse)
+                .map(itemMapper::mapToItemResponse)
                 .collect(Collectors.toList());
     }
 
@@ -41,16 +40,16 @@ public class ItemService {
     public ItemResponse getItemById(Long itemId) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
-        return itemMapper.toItemResponse(existingItem);
+        return itemMapper.mapToItemResponse(existingItem);
 
     }
 
     @Transactional
     public ItemResponse createItem(ItemRequest request) {
-        Item newItem = itemMapper.toEntity(request);
-        validateBundleDiscount(newItem);
+        Item newItem = itemMapper.mapToItemEntity(request);
+        validatePricesAndRequiredQuantity(newItem);
         Item savedItem = itemRepository.save(newItem);
-        return itemMapper.toItemResponse(savedItem);
+        return itemMapper.mapToItemResponse(savedItem);
     }
 
     @Transactional
@@ -58,14 +57,14 @@ public class ItemService {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        itemMapper.updateEntity(existingItem, itemRequest);
-        validateBundleDiscount(existingItem);
+        itemMapper.updateItemEntity(existingItem, itemRequest);
+        validatePricesAndRequiredQuantity(existingItem);
         Item updatedItem = itemRepository.save(existingItem);
-        return itemMapper.toItemResponse(updatedItem);
+        return itemMapper.mapToItemResponse(updatedItem);
     }
 
     @Transactional
-    public ItemResponse patchItem(Long itemId, ItemPatchRequest patchRequest) {
+    public ItemResponse partialUpdateItem(Long itemId, ItemPatchRequest patchRequest) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
@@ -88,11 +87,11 @@ public class ItemService {
         }
 
         if (priceFieldsChanged) {
-            validateBundleDiscount(existingItem);
+            validatePricesAndRequiredQuantity(existingItem);
         }
 
         Item updatedItem = itemRepository.save(existingItem);
-        return itemMapper.toItemResponse(updatedItem);
+        return itemMapper.mapToItemResponse(updatedItem);
     }
 
     @Transactional
@@ -100,24 +99,11 @@ public class ItemService {
         if (!itemRepository.existsById(itemId)) {
             throw new ItemNotFoundException(itemId);
         }
-
-        if (bundleDiscountRepository.checkIfActiveDiscountExistsForItem(itemId)) {
-            throw new ItemHasActiveDiscountsException(itemId);
-        }
-
-        bundleDiscountRepository.deleteInactiveDiscountsForItem(itemId);
+        bundleDiscountRepository.deleteDiscountsForItem(itemId);
         itemRepository.deleteById(itemId);
     }
 
-    @Transactional
-    public void deactivateDiscountByItemId(Long itemId) {
-        if (!itemRepository.existsById(itemId)) {
-            throw new ItemNotFoundException(itemId);
-        }
-        bundleDiscountRepository.deactivateDiscountsByItemId(itemId);
-    }
-
-    private void validateBundleDiscount(Item item) {
+    private void validatePricesAndRequiredQuantity(Item item) {
         if (item.getNormalPrice() == null || item.getNormalPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Normal price must be set and greater than 0");
         }

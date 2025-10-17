@@ -11,7 +11,7 @@ import pl.paweldyjak.checkout_service.service.ItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/items")
 public class ItemController {
     private final ItemService itemService;
 
@@ -19,38 +19,33 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping("/items")
+    @GetMapping
     public List<ItemResponse> getAllItems() {
         return itemService.getAllItems();
     }
 
-    @GetMapping("/items/{itemId}")
+    @GetMapping("/{itemId}")
     public ItemResponse getItemById(@PathVariable Long itemId) {
         return itemService.getItemById(itemId);
     }
 
-    @PostMapping("/items")
-    public ItemResponse createItem(@Valid @RequestBody ItemRequest itemRequest) {
-        return itemService.createItem(itemRequest);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemResponse createItem(@Valid @RequestBody ItemRequest request) {
+        return itemService.createItem(request);
     }
 
-    @PutMapping("/items/{itemId}")
-    public ItemResponse updateItem(@Valid @RequestBody ItemRequest itemRequest, @PathVariable Long itemId) {
-        return itemService.updateItem(itemId, itemRequest);
+    @PutMapping("/{id}")
+    public ItemResponse updateItem(@Valid @RequestBody ItemRequest itemRequest, @PathVariable Long id) {
+        return itemService.updateItem(id, itemRequest);
     }
 
-    @PatchMapping("/items/{itemId}")
+    @PatchMapping("/{itemId}")
     public ItemResponse patchItem(@Valid @RequestBody ItemPatchRequest itemPatchRequest, @PathVariable Long itemId) {
-        return itemService.patchItem(itemId, itemPatchRequest);
+        return itemService.partialUpdateItem(itemId, itemPatchRequest);
     }
 
-    @PatchMapping("/items/{itemId}/discounts/deactivate")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivateDiscountByItemId(@PathVariable Long itemId) {
-        itemService.deactivateDiscountByItemId(itemId);
-    }
-
-    @DeleteMapping("/items/{itemId}")
+    @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteItem(@PathVariable Long itemId) {
         itemService.deleteItem(itemId);

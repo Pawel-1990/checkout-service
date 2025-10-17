@@ -1,14 +1,18 @@
 package pl.paweldyjak.checkout_service.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.paweldyjak.checkout_service.dto.request.BundleDiscountPatchRequest;
+import pl.paweldyjak.checkout_service.dto.request.BundleDiscountRequest;
 import pl.paweldyjak.checkout_service.dto.response.BundleDiscountResponse;
 import pl.paweldyjak.checkout_service.service.BundleDiscountService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/bundle-discounts")
 public class BundleDiscountController {
 
     private final BundleDiscountService bundleDiscountService;
@@ -17,19 +21,40 @@ public class BundleDiscountController {
         this.bundleDiscountService = bundleDiscountService;
     }
 
-    @GetMapping("/discounts")
-    public List<BundleDiscountResponse> getAllDiscounts() {
-        return bundleDiscountService.getAllDiscounts();
+    @GetMapping
+    public List<BundleDiscountResponse> getAllBundledDiscounts() {
+        return bundleDiscountService.getAllBundledDiscounts();
     }
 
-    @GetMapping("/discounts/{discountId}")
-    public BundleDiscountResponse getDiscountById(@PathVariable Long discountId) {
-        return bundleDiscountService.getDiscountById(discountId);
+    @GetMapping("/{id}")
+    public BundleDiscountResponse getBundleDiscountById(@PathVariable Long id) {
+        return bundleDiscountService.getBundleDiscountById(id);
     }
 
-    @PatchMapping("/discounts/{discountId}/deactivate")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BundleDiscountResponse createBundleDiscount(
+            @Valid @RequestBody BundleDiscountRequest request) {
+        return bundleDiscountService.createBundleDiscount(request);
+    }
+
+    @PutMapping("/{id}")
+    public BundleDiscountResponse updateBundleDiscount(
+            @PathVariable Long id,
+            @Valid @RequestBody BundleDiscountRequest request) {
+        return bundleDiscountService.updateBundleDiscount(id, request);
+    }
+
+    @PatchMapping("/{id}")
+    public BundleDiscountResponse partialUpdateBundleDiscount(
+            @PathVariable Long id,
+            @Valid @RequestBody BundleDiscountPatchRequest request) {
+        return bundleDiscountService.partialUpdateBundleDiscount(id, request);
+    }
+
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivateDiscountById(@PathVariable Long discountId) {
-        bundleDiscountService.deactivateDiscountById(discountId);
+    public void deleteBundleDiscount(@PathVariable Long id) {
+        bundleDiscountService.deleteBundleDiscount(id);
     }
 }

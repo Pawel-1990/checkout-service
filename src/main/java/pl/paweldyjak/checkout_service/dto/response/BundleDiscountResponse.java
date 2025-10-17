@@ -23,7 +23,5 @@ public class BundleDiscountResponse {
 
     @JsonProperty("discount_amount")
     private BigDecimal discountAmount;
-
-    private boolean active;
 }
 

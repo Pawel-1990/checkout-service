@@ -37,11 +37,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ItemHasActiveDiscountsException.class)
-    public ResponseEntity<Object> handleItemHasActiveDiscounts(ItemHasActiveDiscountsException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
-    }
-
     @ExceptionHandler(BundleDiscountNotFoundException.class)
     public ResponseEntity<Object> handleBundleDiscountNotFound(BundleDiscountNotFoundException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -52,6 +47,10 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -70,11 +69,6 @@ public class GlobalExceptionHandler {
 
         body.put("errors", errors);
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {

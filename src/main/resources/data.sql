@@ -10,9 +10,9 @@ VALUES ('A', 40, 3, 30),
        ('I', 350, 3, 320),
        ('J', 4, 5, 2.8);
 
-INSERT INTO bundle_discounts (first_item_id, second_item_id, discount_amount, active)
-VALUES (1, 5, 5, true),
-       (7, 9, 12, true),
-       (4, 10, 3, true),
-       (2, 8, 8, true),
-       (3, 6, 4, true);
+INSERT INTO bundle_discounts (first_item_id, second_item_id, discount_amount)
+VALUES (1, 5, 5),
+       (7, 9, 12),
+       (4, 10, 3),
+       (2, 8, 8),
+       (3, 6, 4);
