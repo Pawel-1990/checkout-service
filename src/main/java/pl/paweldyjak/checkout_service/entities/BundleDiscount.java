@@ -36,7 +36,7 @@ public class BundleDiscount {
 
     @NotNull(message = "Discount amount cannot be null")
     @DecimalMin(value = "0.01", message = "Discount amount must be greater than 0")
-    @Column(name = "discount_amount", nullable = false)
+    @Column(name = "discount_amount", nullable = false, precision = 19, scale = 2)
     private BigDecimal discountAmount;
 
     @Column(name = "active", nullable = false)

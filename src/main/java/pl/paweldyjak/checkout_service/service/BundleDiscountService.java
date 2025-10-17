@@ -26,7 +26,7 @@ public class BundleDiscountService {
 
     public List<BundleDiscountResponse> getAllDiscounts() {
         return bundleDiscountRepository.findAll().stream()
-                .map(bundleDiscountMapper::toDTO)
+                .map(bundleDiscountMapper::convertToBundleDiscountResponse)
                 .collect(Collectors.toList());
 
     }
@@ -34,7 +34,7 @@ public class BundleDiscountService {
     public BundleDiscountResponse getDiscountById(Long id) {
         BundleDiscount discount = bundleDiscountRepository.findById(id)
                 .orElseThrow(() -> new BundleDiscountNotFoundException(id));
-        return bundleDiscountMapper.toDTO(discount);
+        return bundleDiscountMapper.convertToBundleDiscountResponse(discount);
 
     }
 

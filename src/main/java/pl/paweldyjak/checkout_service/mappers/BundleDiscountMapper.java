@@ -15,25 +15,24 @@ public class BundleDiscountMapper {
         this.itemMapper = itemMapper;
     }
 
-    public BundleDiscountResponse toDTO(BundleDiscount bundleDiscount) {
+    public BundleDiscountResponse convertToBundleDiscountResponse(BundleDiscount bundleDiscount) {
         if (bundleDiscount == null) {
             return null;
         }
 
         return new BundleDiscountResponse(
                 bundleDiscount.getId(),
-                toItemResponse(bundleDiscount.getFirstItem()),
-                toItemResponse(bundleDiscount.getSecondItem()),
+                convertToItemResponse(bundleDiscount.getFirstItem()),
+                convertToItemResponse(bundleDiscount.getSecondItem()),
                 bundleDiscount.getDiscountAmount(),
                 bundleDiscount.isActive()
         );
     }
 
-    private ItemResponse toItemResponse(Item item) {
+    private ItemResponse convertToItemResponse(Item item) {
         if (item == null) {
             return null;
         }
-
         ItemResponse response = itemMapper.toItemResponse(item);
 
         response.setRequiredQuantity(null);
