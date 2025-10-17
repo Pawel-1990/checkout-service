@@ -18,7 +18,7 @@ public interface BundleDiscountRepository extends JpaRepository<BundleDiscount, 
     void deleteInactiveDiscountsForItem(@Param("itemId") Long itemId);
 
     @Modifying
-    @Query("UPDATE BundleDiscount bd SET bd.active = false WHERE (bd.id = :bundleDiscountId) AND bd.active = true")
+    @Query("UPDATE BundleDiscount bd SET bd.active = false WHERE (bd.id = :bundleDiscountId)")
     void deactivateDiscountsById(@Param("bundleDiscountId") Long itemId);
 
     @Modifying

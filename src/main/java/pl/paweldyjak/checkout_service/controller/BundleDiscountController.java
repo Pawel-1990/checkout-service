@@ -2,7 +2,7 @@ package pl.paweldyjak.checkout_service.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.entities.BundleDiscount;
+import pl.paweldyjak.checkout_service.dto.response.BundleDiscountResponse;
 import pl.paweldyjak.checkout_service.service.BundleDiscountService;
 
 import java.util.List;
@@ -18,12 +18,12 @@ public class BundleDiscountController {
     }
 
     @GetMapping("/discounts")
-    public List<BundleDiscount> getAllDiscounts() {
+    public List<BundleDiscountResponse> getAllDiscounts() {
         return bundleDiscountService.getAllDiscounts();
     }
 
     @GetMapping("/discounts/{discountId}")
-    public BundleDiscount getDiscountById(@PathVariable Long discountId) {
+    public BundleDiscountResponse getDiscountById(@PathVariable Long discountId) {
         return bundleDiscountService.getDiscountById(discountId);
     }
 

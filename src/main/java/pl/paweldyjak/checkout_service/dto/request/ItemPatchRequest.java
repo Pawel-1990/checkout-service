@@ -1,7 +1,6 @@
-package pl.paweldyjak.checkout_service.dto;
+package pl.paweldyjak.checkout_service.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -12,7 +11,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class ItemPatchDTO {
+public class ItemPatchRequest {
 
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
     private String name;

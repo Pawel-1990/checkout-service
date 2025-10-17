@@ -1,6 +1,8 @@
 package pl.paweldyjak.checkout_service.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,14 +24,18 @@ public class BundleDiscount {
     @Column(name = "id")
     private Long id;
 
+    @NotNull(message = "First item cannot be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_item_id", nullable = false)
     private Item firstItem;
 
+    @NotNull(message = "Second item cannot be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_item_id", nullable = false)
     private Item secondItem;
 
+    @NotNull(message = "Discount amount cannot be null")
+    @DecimalMin(value = "0.01", message = "Discount amount must be greater than 0")
     @Column(name = "discount_amount", nullable = false)
     private BigDecimal discountAmount;
 

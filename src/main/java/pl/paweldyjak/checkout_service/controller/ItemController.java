@@ -3,14 +3,12 @@ package pl.paweldyjak.checkout_service.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dto.ItemPatchDTO;
-import pl.paweldyjak.checkout_service.entities.Item;
-import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemAlreadyHasIdException;
-import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemIdMismatchException;
+import pl.paweldyjak.checkout_service.dto.request.ItemRequest;
+import pl.paweldyjak.checkout_service.dto.request.ItemPatchRequest;
+import pl.paweldyjak.checkout_service.dto.response.ItemResponse;
 import pl.paweldyjak.checkout_service.service.ItemService;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -22,34 +20,28 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public List<Item> getAllItems() {
+    public List<ItemResponse> getAllItems() {
         return itemService.getAllItems();
     }
 
     @GetMapping("/items/{itemId}")
-    public Item getItemById(@PathVariable Long itemId) {
+    public ItemResponse getItemById(@PathVariable Long itemId) {
         return itemService.getItemById(itemId);
     }
 
     @PostMapping("/items")
-    public Item saveItem(@RequestBody Item item) {
-        if (item.getId() != null) {
-            throw new ItemAlreadyHasIdException(item.getId());
-        }
-        return itemService.saveItem(item);
+    public ItemResponse createItem(@Valid @RequestBody ItemRequest itemRequest) {
+        return itemService.createItem(itemRequest);
     }
 
     @PutMapping("/items/{itemId}")
-    public Item updateItem(@RequestBody Item item, @PathVariable Long itemId) {
-        if (!Objects.equals(item.getId(), itemId)) {
-            throw new ItemIdMismatchException(itemId, item.getId());
-        }
-        return itemService.saveItem(item);
+    public ItemResponse updateItem(@Valid @RequestBody ItemRequest itemRequest, @PathVariable Long itemId) {
+        return itemService.updateItem(itemId, itemRequest);
     }
 
     @PatchMapping("/items/{itemId}")
-    public Item patchItem(@Valid @RequestBody ItemPatchDTO patchDTO, @PathVariable Long itemId) {
-        return itemService.patchItem(itemId, patchDTO);
+    public ItemResponse patchItem(@Valid @RequestBody ItemPatchRequest itemPatchRequest, @PathVariable Long itemId) {
+        return itemService.patchItem(itemId, itemPatchRequest);
     }
 
     @PatchMapping("/items/{itemId}/discounts/deactivate")

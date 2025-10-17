@@ -6,6 +6,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountException;
+import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.*;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,17 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(BundleDiscountNotFoundException.class)
+    public ResponseEntity<Object> handleBundleDiscountNotFound(BundleDiscountNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BundleDiscountException.class)
+    public ResponseEntity<Object> handleBundleDiscountException(BundleDiscountException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
@@ -59,8 +72,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-
-
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
