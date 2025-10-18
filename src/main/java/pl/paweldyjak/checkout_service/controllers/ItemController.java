@@ -1,12 +1,12 @@
-package pl.paweldyjak.checkout_service.controller;
+package pl.paweldyjak.checkout_service.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dto.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dto.request.ItemPatchRequest;
-import pl.paweldyjak.checkout_service.dto.response.ItemResponse;
-import pl.paweldyjak.checkout_service.service.ItemService;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
+import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.services.ItemService;
 
 import java.util.List;
 
@@ -27,6 +27,11 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemResponse getItemById(@PathVariable Long itemId) {
         return itemService.getItemById(itemId);
+    }
+
+    @GetMapping("/names")
+    public List<String> getAllAvailableItemNames() {
+        return itemService.getAllAvailableItemNames();
     }
 
     @PostMapping

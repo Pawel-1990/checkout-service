@@ -1,13 +1,12 @@
-package pl.paweldyjak.checkout_service.controller;
+package pl.paweldyjak.checkout_service.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dto.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dto.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dto.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.service.BundleDiscountService;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 
 import java.util.List;
 

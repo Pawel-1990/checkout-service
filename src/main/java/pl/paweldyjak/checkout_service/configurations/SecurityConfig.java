@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.configuration;
+package pl.paweldyjak.checkout_service.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

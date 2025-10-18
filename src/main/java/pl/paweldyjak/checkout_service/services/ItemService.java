@@ -1,15 +1,15 @@
-package pl.paweldyjak.checkout_service.service;
+package pl.paweldyjak.checkout_service.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.paweldyjak.checkout_service.dto.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dto.request.ItemPatchRequest;
-import pl.paweldyjak.checkout_service.dto.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
+import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
-import pl.paweldyjak.checkout_service.repository.BundleDiscountRepository;
-import pl.paweldyjak.checkout_service.repository.ItemRepository;
+import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
+import pl.paweldyjak.checkout_service.repositories.ItemRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -70,19 +70,19 @@ public class ItemService {
 
         boolean priceFieldsChanged = false;
 
-        if (patchRequest.getName() != null) {
-            existingItem.setName(patchRequest.getName());
+        if (patchRequest.name() != null) {
+            existingItem.setName(patchRequest.name());
         }
-        if (patchRequest.getNormalPrice() != null) {
-            existingItem.setNormalPrice(patchRequest.getNormalPrice());
+        if (patchRequest.normalPrice() != null) {
+            existingItem.setNormalPrice(patchRequest.normalPrice());
             priceFieldsChanged = true;
         }
-        if (patchRequest.getRequiredQuantity() != null) {
-            existingItem.setRequiredQuantity(patchRequest.getRequiredQuantity());
+        if (patchRequest.requiredQuantity() != null) {
+            existingItem.setRequiredQuantity(patchRequest.requiredQuantity());
             priceFieldsChanged = true;
         }
-        if (patchRequest.getSpecialPrice() != null) {
-            existingItem.setSpecialPrice(patchRequest.getSpecialPrice());
+        if (patchRequest.specialPrice() != null) {
+            existingItem.setSpecialPrice(patchRequest.specialPrice());
             priceFieldsChanged = true;
         }
 
@@ -120,4 +120,7 @@ public class ItemService {
         }
     }
 
+    public List<String> getAllAvailableItemNames() {
+        return itemRepository.findAllAvailableItemNames();
+    }
 }

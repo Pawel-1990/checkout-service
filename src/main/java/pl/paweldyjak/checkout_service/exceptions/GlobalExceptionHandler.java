@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountException;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
+import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.CheckoutNotFoundException;
+import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.InaccurateQuantityToDeleteException;
+import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.ItemNotFoundInCheckout;
+import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.ItemUnavailableException;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.*;
 
 import java.time.LocalDateTime;
@@ -17,24 +21,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ItemAlreadyHasIdException.class)
-    public ResponseEntity<Object> handleItemAlreadyHasIdException(ItemAlreadyHasIdException e) {
-        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ItemIdMissingException.class)
-    public ResponseEntity<Object> handleItemIdMissing(ItemIdMissingException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(ItemNotFoundException.class)
     public ResponseEntity<Object> handleItemNotFound(ItemNotFoundException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ItemIdMismatchException.class)
-    public ResponseEntity<Object> handleItemIdMismatch(ItemIdMismatchException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BundleDiscountNotFoundException.class)
@@ -42,14 +31,29 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(BundleDiscountException.class)
-    public ResponseEntity<Object> handleBundleDiscountException(BundleDiscountException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ItemUnavailableException.class)
+    public ResponseEntity<Object> handleItemUnavailable(ItemUnavailableException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CheckoutNotFoundException.class)
+    public ResponseEntity<Object> handleItemUnavailable(CheckoutNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ItemNotFoundInCheckout.class)
+    public ResponseEntity<Object> handleItemNotFoundInCheckout(ItemNotFoundInCheckout ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InaccurateQuantityToDeleteException.class)
+    public ResponseEntity<Object> handleInaccurateQuantityToDelete(InaccurateQuantityToDeleteException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

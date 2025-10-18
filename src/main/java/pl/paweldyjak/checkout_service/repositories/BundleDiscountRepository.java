@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.repository;
+package pl.paweldyjak.checkout_service.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

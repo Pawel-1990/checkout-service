@@ -1,14 +1,11 @@
 package pl.paweldyjak.checkout_service.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.paweldyjak.checkout_service.dto.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dto.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.dto.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
-import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
-
-import java.math.BigDecimal;
 
 @Component
 public class BundleDiscountMapper {
@@ -24,22 +21,19 @@ public class BundleDiscountMapper {
             return null;
         }
 
-        return new BundleDiscountResponse(
-                bundleDiscount.getId(),
-                mapToItemResponse(bundleDiscount.getFirstItem()),
-                mapToItemResponse(bundleDiscount.getSecondItem()),
-                bundleDiscount.getDiscountAmount()
-        );
+        return BundleDiscountResponse.builder()
+                .id(bundleDiscount.getId())
+                .firstItem(mapToItemResponse(bundleDiscount.getFirstItem()))
+                .secondItem(mapToItemResponse(bundleDiscount.getSecondItem()))
+                .discountAmount(bundleDiscount.getDiscountAmount()).build();
+
     }
 
     private ItemResponse mapToItemResponse(Item item) {
         if (item == null) {
             return null;
         }
-        ItemResponse response = itemMapper.mapToItemResponse(item);
-        response.setRequiredQuantity(null);
-        response.setSpecialPrice(null);
-        return response;
+        return itemMapper.mapToItemResponse(item);
     }
 
     public BundleDiscount mapToBundleDiscountEntity(BundleDiscountRequest request, Item firstItem, Item secondItem) {
@@ -47,7 +41,7 @@ public class BundleDiscountMapper {
             return null;
         }
         BundleDiscount bundleDiscountEntity = new BundleDiscount();
-        bundleDiscountEntity.setDiscountAmount(request.getDiscountAmount());
+        bundleDiscountEntity.setDiscountAmount(request.discountAmount());
         bundleDiscountEntity.setFirstItem(firstItem);
         bundleDiscountEntity.setSecondItem(secondItem);
         return bundleDiscountEntity;

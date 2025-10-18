@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Entity
 @Table(
-        name = "bundle_discounts",
+        name = "bundle_discount",
         uniqueConstraints = @UniqueConstraint(columnNames = {"first_item_id", "second_item_id"})
 )
 public class BundleDiscount {

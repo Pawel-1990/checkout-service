@@ -1,18 +1,18 @@
-package pl.paweldyjak.checkout_service.service;
+package pl.paweldyjak.checkout_service.services;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.paweldyjak.checkout_service.dto.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dto.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dto.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
-import pl.paweldyjak.checkout_service.repository.BundleDiscountRepository;
-import pl.paweldyjak.checkout_service.repository.ItemRepository;
+import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
+import pl.paweldyjak.checkout_service.repositories.ItemRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,10 +47,10 @@ public class BundleDiscountService {
     @Transactional
     public BundleDiscountResponse createBundleDiscount(@Valid BundleDiscountRequest request) {
 
-        validateSameItems(request.getFirstItemId(), request.getSecondItemId());
+        validateSameItems(request.firstItemId(), request.secondItemId());
 
-        Item firstItem = findItemById(request.getFirstItemId());
-        Item secondItem = findItemById(request.getSecondItemId());
+        Item firstItem = findItemById(request.firstItemId());
+        Item secondItem = findItemById(request.secondItemId());
 
         BundleDiscount newBundleDiscount = bundleDiscountMapper.mapToBundleDiscountEntity(
                 request, firstItem, secondItem);
@@ -63,12 +63,12 @@ public class BundleDiscountService {
     public BundleDiscountResponse updateBundleDiscount(Long id, @Valid BundleDiscountRequest request) {
         BundleDiscount existingBundleDiscount = findBundleDiscountById(id);
 
-        validateSameItems(request.getFirstItemId(), request.getSecondItemId());
+        validateSameItems(request.firstItemId(), request.secondItemId());
 
-        Item firstItem = findItemById(request.getFirstItemId());
-        Item secondItem = findItemById(request.getSecondItemId());
+        Item firstItem = findItemById(request.firstItemId());
+        Item secondItem = findItemById(request.secondItemId());
 
-        existingBundleDiscount.setDiscountAmount(request.getDiscountAmount());
+        existingBundleDiscount.setDiscountAmount(request.discountAmount());
         existingBundleDiscount.setFirstItem(firstItem);
         existingBundleDiscount.setSecondItem(secondItem);
 
@@ -80,28 +80,28 @@ public class BundleDiscountService {
     public BundleDiscountResponse partialUpdateBundleDiscount(Long id, @Valid BundleDiscountPatchRequest request) {
         BundleDiscount existingBundleDiscount = findBundleDiscountById(id);
 
-        Long finalFirstItemId = request.getFirstItemId() != null
-                ? request.getFirstItemId()
+        Long finalFirstItemId = request.firstItemId() != null
+                ? request.firstItemId()
                 : existingBundleDiscount.getFirstItem().getId();
 
-        Long finalSecondItemId = request.getSecondItemId() != null
-                ? request.getSecondItemId()
+        Long finalSecondItemId = request.secondItemId() != null
+                ? request.secondItemId()
                 : existingBundleDiscount.getSecondItem().getId();
 
         validateSameItems(finalFirstItemId, finalSecondItemId);
 
-        if (request.getFirstItemId() != null) {
+        if (request.firstItemId() != null) {
             Item firstItem = findItemById(finalFirstItemId);
             existingBundleDiscount.setFirstItem(firstItem);
         }
 
-        if (request.getSecondItemId() != null) {
+        if (request.secondItemId() != null) {
             Item secondItem = findItemById(finalSecondItemId);
             existingBundleDiscount.setSecondItem(secondItem);
         }
 
-        if (request.getDiscountAmount() != null) {
-            existingBundleDiscount.setDiscountAmount(request.getDiscountAmount());
+        if (request.discountAmount() != null) {
+            existingBundleDiscount.setDiscountAmount(request.discountAmount());
         }
 
         BundleDiscount savedBundleDiscount = bundleDiscountRepository.save(existingBundleDiscount);
