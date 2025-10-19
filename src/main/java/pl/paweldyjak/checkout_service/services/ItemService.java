@@ -8,7 +8,6 @@ import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
-import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
 import pl.paweldyjak.checkout_service.repositories.ItemRepository;
 
 import java.math.BigDecimal;
@@ -16,16 +15,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final BundleDiscountRepository bundleDiscountRepository;
     private final ItemMapper itemMapper;
 
 
-    public ItemService(ItemRepository itemRepository, BundleDiscountRepository bundleDiscountRepository, ItemMapper itemMapper) {
+    public ItemService(ItemRepository itemRepository, ItemMapper itemMapper) {
         this.itemRepository = itemRepository;
-        this.bundleDiscountRepository = bundleDiscountRepository;
         this.itemMapper = itemMapper;
     }
 
@@ -37,14 +35,28 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<Item> getAllItemsEntities() {
+        return itemRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public ItemResponse getItemById(Long itemId) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
         return itemMapper.mapToItemResponse(existingItem);
-
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public Item getItemEntityById(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException(itemId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllAvailableItemNames() {
+        return itemRepository.findAllAvailableItemNames();
+    }
+
     public ItemResponse createItem(ItemRequest request) {
         Item newItem = itemMapper.mapToItemEntity(request);
         validatePricesAndRequiredQuantity(newItem);
@@ -52,18 +64,17 @@ public class ItemService {
         return itemMapper.mapToItemResponse(savedItem);
     }
 
-    @Transactional
     public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        itemMapper.updateItemEntity(existingItem, itemRequest);
+        existingItem = itemMapper.updateItemEntity(existingItem, itemRequest);
         validatePricesAndRequiredQuantity(existingItem);
         Item updatedItem = itemRepository.save(existingItem);
+
         return itemMapper.mapToItemResponse(updatedItem);
     }
 
-    @Transactional
     public ItemResponse partialUpdateItem(Long itemId, ItemPatchRequest patchRequest) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
@@ -94,16 +105,14 @@ public class ItemService {
         return itemMapper.mapToItemResponse(updatedItem);
     }
 
-    @Transactional
     public void deleteItem(Long itemId) {
         if (!itemRepository.existsById(itemId)) {
             throw new ItemNotFoundException(itemId);
         }
-        bundleDiscountRepository.deleteDiscountsForItem(itemId);
         itemRepository.deleteById(itemId);
     }
 
-    private void validatePricesAndRequiredQuantity(Item item) {
+    public void validatePricesAndRequiredQuantity(Item item) {
         if (item.getNormalPrice() == null || item.getNormalPrice().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Normal price must be set and greater than 0");
         }
@@ -118,9 +127,5 @@ public class ItemService {
         if (hasSpecialPrice && item.getSpecialPrice().compareTo(item.getNormalPrice()) >= 0) {
             throw new IllegalArgumentException("Special price must be lower than normal price");
         }
-    }
-
-    public List<String> getAllAvailableItemNames() {
-        return itemRepository.findAllAvailableItemNames();
     }
 }

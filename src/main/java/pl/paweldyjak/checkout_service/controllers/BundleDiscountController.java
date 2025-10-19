@@ -20,14 +20,14 @@ public class BundleDiscountController {
         this.bundleDiscountService = bundleDiscountService;
     }
 
+    @GetMapping("/{id}")
+    public BundleDiscountResponse getBundleDiscountById(@PathVariable Long id) {
+        return bundleDiscountService.getBundleDiscountResponseById(id);
+    }
+
     @GetMapping
     public List<BundleDiscountResponse> getAllBundledDiscounts() {
         return bundleDiscountService.getAllBundledDiscounts();
-    }
-
-    @GetMapping("/{id}")
-    public BundleDiscountResponse getBundleDiscountById(@PathVariable Long id) {
-        return bundleDiscountService.getBundleDiscountById(id);
     }
 
     @PostMapping

@@ -9,10 +9,8 @@ import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
-import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
 import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
-import pl.paweldyjak.checkout_service.repositories.ItemRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,13 +21,14 @@ public class BundleDiscountService {
 
     private final BundleDiscountRepository bundleDiscountRepository;
     private final BundleDiscountMapper bundleDiscountMapper;
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
 
-    public BundleDiscountService(BundleDiscountRepository bundleDiscountRepository, BundleDiscountMapper bundleDiscountMapper, ItemRepository itemRepository) {
+    public BundleDiscountService(BundleDiscountRepository bundleDiscountRepository, BundleDiscountMapper bundleDiscountMapper,
+                                 ItemService itemService) {
         this.bundleDiscountRepository = bundleDiscountRepository;
         this.bundleDiscountMapper = bundleDiscountMapper;
-        this.itemRepository = itemRepository;
+        this.itemService = itemService;
     }
 
     public List<BundleDiscountResponse> getAllBundledDiscounts() {
@@ -39,34 +38,36 @@ public class BundleDiscountService {
 
     }
 
-    public BundleDiscountResponse getBundleDiscountById(Long id) {
-        BundleDiscount discount = findBundleDiscountById(id);
-        return bundleDiscountMapper.mapToBundleDiscountResponse(discount);
-
+    public BundleDiscount getBundleDiscountById(Long id) {
+        return bundleDiscountRepository.findById(id)
+                .orElseThrow(() -> new BundleDiscountNotFoundException(id));
     }
+
+    public BundleDiscountResponse getBundleDiscountResponseById(Long id) {
+        BundleDiscount discount = getBundleDiscountById(id);
+        return bundleDiscountMapper.mapToBundleDiscountResponse(discount);
+    }
+
     @Transactional
     public BundleDiscountResponse createBundleDiscount(@Valid BundleDiscountRequest request) {
-
         validateSameItems(request.firstItemId(), request.secondItemId());
 
-        Item firstItem = findItemById(request.firstItemId());
-        Item secondItem = findItemById(request.secondItemId());
+        Item firstItem = itemService.getItemEntityById(request.firstItemId());
+        Item secondItem = itemService.getItemEntityById(request.secondItemId());
 
-        BundleDiscount newBundleDiscount = bundleDiscountMapper.mapToBundleDiscountEntity(
-                request, firstItem, secondItem);
-
-        BundleDiscount savedBundleDiscount = bundleDiscountRepository.save(newBundleDiscount);
+        BundleDiscount savedBundleDiscount = bundleDiscountRepository.save(bundleDiscountMapper.mapToBundleDiscountEntity(
+                request, firstItem, secondItem));
         return bundleDiscountMapper.mapToBundleDiscountResponse(savedBundleDiscount);
     }
 
     @Transactional
     public BundleDiscountResponse updateBundleDiscount(Long id, @Valid BundleDiscountRequest request) {
-        BundleDiscount existingBundleDiscount = findBundleDiscountById(id);
+        BundleDiscount existingBundleDiscount = getBundleDiscountById(id);
 
         validateSameItems(request.firstItemId(), request.secondItemId());
 
-        Item firstItem = findItemById(request.firstItemId());
-        Item secondItem = findItemById(request.secondItemId());
+        Item firstItem = itemService.getItemEntityById(request.firstItemId());
+        Item secondItem = itemService.getItemEntityById(request.secondItemId());
 
         existingBundleDiscount.setDiscountAmount(request.discountAmount());
         existingBundleDiscount.setFirstItem(firstItem);
@@ -78,7 +79,7 @@ public class BundleDiscountService {
 
     @Transactional
     public BundleDiscountResponse partialUpdateBundleDiscount(Long id, @Valid BundleDiscountPatchRequest request) {
-        BundleDiscount existingBundleDiscount = findBundleDiscountById(id);
+        BundleDiscount existingBundleDiscount = getBundleDiscountById(id);
 
         Long finalFirstItemId = request.firstItemId() != null
                 ? request.firstItemId()
@@ -91,12 +92,12 @@ public class BundleDiscountService {
         validateSameItems(finalFirstItemId, finalSecondItemId);
 
         if (request.firstItemId() != null) {
-            Item firstItem = findItemById(finalFirstItemId);
+            Item firstItem = itemService.getItemEntityById(finalFirstItemId);
             existingBundleDiscount.setFirstItem(firstItem);
         }
 
         if (request.secondItemId() != null) {
-            Item secondItem = findItemById(finalSecondItemId);
+            Item secondItem = itemService.getItemEntityById(finalSecondItemId);
             existingBundleDiscount.setSecondItem(secondItem);
         }
 
@@ -110,25 +111,13 @@ public class BundleDiscountService {
 
     @Transactional
     public void deleteBundleDiscount(Long id) {
-        BundleDiscount bundleDiscount = findBundleDiscountById(id);
+        BundleDiscount bundleDiscount = getBundleDiscountById(id);
         bundleDiscountRepository.delete(bundleDiscount);
     }
 
-    private void validateSameItems(Long firstItemId, Long secondItemId) {
+    public void validateSameItems(Long firstItemId, Long secondItemId) {
         if (firstItemId != null && firstItemId.equals(secondItemId)) {
             throw new IllegalArgumentException("Bundle discount cannot contain the same item twice");
         }
     }
-
-    private Item findItemById(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException(itemId));
-    }
-
-    private BundleDiscount findBundleDiscountById(Long id) {
-        return bundleDiscountRepository.findById(id)
-                .orElseThrow(() -> new BundleDiscountNotFoundException(id));
-    }
-
-
 }

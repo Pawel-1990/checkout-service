@@ -1,9 +1,11 @@
 package pl.paweldyjak.checkout_service.dtos.request;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record ItemRequest(
 
         @NotBlank(message = "Name cannot be blank")

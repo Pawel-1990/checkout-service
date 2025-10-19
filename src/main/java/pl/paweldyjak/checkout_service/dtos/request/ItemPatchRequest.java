@@ -2,9 +2,11 @@ package pl.paweldyjak.checkout_service.dtos.request;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record ItemPatchRequest(
         String name,
 

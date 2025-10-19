@@ -19,14 +19,14 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @GetMapping("/{id}")
+    public ItemResponse getItemById(@PathVariable Long id) {
+        return itemService.getItemById(id);
+    }
+
     @GetMapping
     public List<ItemResponse> getAllItems() {
         return itemService.getAllItems();
-    }
-
-    @GetMapping("/{itemId}")
-    public ItemResponse getItemById(@PathVariable Long itemId) {
-        return itemService.getItemById(itemId);
     }
 
     @GetMapping("/names")
@@ -45,14 +45,14 @@ public class ItemController {
         return itemService.updateItem(id, itemRequest);
     }
 
-    @PatchMapping("/{itemId}")
-    public ItemResponse patchItem(@Valid @RequestBody ItemPatchRequest itemPatchRequest, @PathVariable Long itemId) {
-        return itemService.partialUpdateItem(itemId, itemPatchRequest);
+    @PatchMapping("/{id}")
+    public ItemResponse partialUpdateItem(@Valid @RequestBody ItemPatchRequest itemPatchRequest, @PathVariable Long id) {
+        return itemService.partialUpdateItem(id, itemPatchRequest);
     }
 
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteItem(@PathVariable Long itemId) {
-        itemService.deleteItem(itemId);
+    public void deleteItem(@PathVariable Long id) {
+        itemService.deleteItem(id);
     }
 }

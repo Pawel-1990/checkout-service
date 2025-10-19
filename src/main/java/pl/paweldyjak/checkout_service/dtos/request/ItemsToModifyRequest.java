@@ -3,8 +3,10 @@ package pl.paweldyjak.checkout_service.dtos.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
-public record AddItemsRequest (
+@Builder
+public record ItemsToModifyRequest(
     @NotBlank(message = "Item name cannot be blank")
     String itemName,
 

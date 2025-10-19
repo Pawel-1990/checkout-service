@@ -23,17 +23,10 @@ public class BundleDiscountMapper {
 
         return BundleDiscountResponse.builder()
                 .id(bundleDiscount.getId())
-                .firstItem(mapToItemResponse(bundleDiscount.getFirstItem()))
-                .secondItem(mapToItemResponse(bundleDiscount.getSecondItem()))
+                .firstItem(itemMapper.mapToItemResponse(bundleDiscount.getFirstItem()))
+                .secondItem(itemMapper.mapToItemResponse(bundleDiscount.getSecondItem()))
                 .discountAmount(bundleDiscount.getDiscountAmount()).build();
 
-    }
-
-    private ItemResponse mapToItemResponse(Item item) {
-        if (item == null) {
-            return null;
-        }
-        return itemMapper.mapToItemResponse(item);
     }
 
     public BundleDiscount mapToBundleDiscountEntity(BundleDiscountRequest request, Item firstItem, Item secondItem) {

@@ -3,9 +3,7 @@ package pl.paweldyjak.checkout_service.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -13,6 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode(of = {"firstItem", "secondItem"})
 @Table(
         name = "bundle_discount",
         uniqueConstraints = @UniqueConstraint(columnNames = {"first_item_id", "second_item_id"})

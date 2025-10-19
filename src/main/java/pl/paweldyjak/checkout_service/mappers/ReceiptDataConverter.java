@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service;
+package pl.paweldyjak.checkout_service.mappers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

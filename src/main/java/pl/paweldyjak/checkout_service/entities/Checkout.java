@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import pl.paweldyjak.checkout_service.ReceiptDataConverter;
+import pl.paweldyjak.checkout_service.mappers.ReceiptDataConverter;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 
@@ -19,7 +18,6 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @Entity
-@ToString
 @Table(name = "checkout")
 public class Checkout {
 

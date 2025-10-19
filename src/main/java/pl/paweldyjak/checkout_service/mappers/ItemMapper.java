@@ -36,14 +36,15 @@ public class ItemMapper {
         return item;
     }
 
-    public void updateItemEntity(Item item, ItemRequest itemRequest) {
+    public Item updateItemEntity(Item item, ItemRequest itemRequest) {
         if (item == null || itemRequest == null) {
-            return;
+            return null;
         }
         item.setName(itemRequest.name());
         item.setNormalPrice(itemRequest.normalPrice());
         item.setRequiredQuantity(itemRequest.requiredQuantity());
         item.setSpecialPrice(itemRequest.specialPrice());
+        return item;
     }
 }
 
