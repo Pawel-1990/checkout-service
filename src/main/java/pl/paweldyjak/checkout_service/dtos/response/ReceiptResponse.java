@@ -1,17 +1,18 @@
 package pl.paweldyjak.checkout_service.dtos.response;
 
 import lombok.Builder;
+import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 public record ReceiptResponse(
-        String checkoutId,
-        LocalDateTime paymentDate,
-        List<ItemDetails> items,
-        BigDecimal priceWithoutDiscount,
+        Long checkoutId,
+        String paymentDate,
+        List<ReceiptItemDetails> items,
+        CheckoutStatus status,
+        BigDecimal priceBeforeDiscount,
         BigDecimal totalDiscount,
         BigDecimal finalPrice
 ) {}

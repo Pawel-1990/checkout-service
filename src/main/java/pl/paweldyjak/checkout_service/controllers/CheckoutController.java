@@ -26,6 +26,12 @@ public class CheckoutController {
         return checkoutService.getAllCheckouts();
     }
 
+    @GetMapping("/{id}")
+    CheckoutResponse getCheckoutById(@PathVariable Long id) {
+        return checkoutService.getCheckoutById(id);
+    }
+
+
     @GetMapping("/{id}/items")
     Map<String, Integer> getItemsByCheckoutId(@PathVariable Long id) {
         return checkoutService.getItemsByCheckoutId(id);

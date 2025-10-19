@@ -2,39 +2,30 @@ package pl.paweldyjak.checkout_service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 
-@Converter
-public class ReceiptDataConverter implements AttributeConverter<ReceiptData, String> {
+@Converter(autoApply = true)
+public class ReceiptDataConverter implements AttributeConverter<ReceiptResponse, String> {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(ReceiptData receipt) {
-        if (receipt == null) {
-            return null;
-        }
+    public String convertToDatabaseColumn(ReceiptResponse attribute) {
         try {
-            return objectMapper.writeValueAsString(receipt);
+            return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error converting ReceiptData to JSON: " + e.getMessage(), e);
+            throw new RuntimeException("Could not convert ReceiptResponse to JSON", e);
         }
     }
 
     @Override
-    public ReceiptData convertToEntityAttribute(String json) {
-        if (json == null || json.trim().isEmpty()) {
-            return null;
-        }
+    public ReceiptResponse convertToEntityAttribute(String dbData) {
         try {
-            return objectMapper.readValue(json, ReceiptData.class);
+            return objectMapper.readValue(dbData, ReceiptResponse.class);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error parsing ReceiptData from JSON: " + e.getMessage(), e);
+            throw new RuntimeException("Could not convert JSON to ReceiptResponse", e);
         }
     }
 }

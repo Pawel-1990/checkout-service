@@ -12,7 +12,7 @@ public record CheckoutResponse(
         Long id,
         LocalDateTime createdAt,
         CheckoutStatus status,
-        List<ItemDetails> items,
+        List<CheckoutItemInfo> items,
         BigDecimal priceBeforeDiscount,
         BigDecimal totalDiscount,
         BigDecimal finalPrice

@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ItemDetails(
+public record ReceiptItemDetails(
         String itemName,
         int quantity,
         int discountedQuantity,
@@ -13,5 +13,5 @@ public record ItemDetails(
         boolean discountApplies,
         BigDecimal priceBeforeDiscount,
         BigDecimal discountAmount,
-        BigDecimal finalPrice
+        BigDecimal priceAfterDiscount
 ) {}

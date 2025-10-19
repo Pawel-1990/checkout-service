@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountException;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
-import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.CheckoutNotFoundException;
-import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.InaccurateQuantityToDeleteException;
-import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.ItemNotFoundInCheckout;
-import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.ItemUnavailableException;
+import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.*;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.*;
 
 import java.time.LocalDateTime;
@@ -54,6 +51,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InaccurateQuantityToDeleteException.class)
     public ResponseEntity<Object> handleInaccurateQuantityToDelete(InaccurateQuantityToDeleteException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmptyCheckoutException.class)
+    public ResponseEntity<Object> handleEmptyCheckout(EmptyCheckoutException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
