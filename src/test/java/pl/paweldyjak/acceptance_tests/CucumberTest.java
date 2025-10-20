@@ -6,7 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
 
 @CucumberContextConfiguration
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = CheckoutServiceApplication.class)
 public class CucumberTest {
 }
