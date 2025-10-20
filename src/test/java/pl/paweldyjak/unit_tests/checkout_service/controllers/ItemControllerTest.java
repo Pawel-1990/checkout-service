@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.controllers;
+package pl.paweldyjak.unit_tests.checkout_service.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.controllers.ItemController;
+import pl.paweldyjak.unit_tests.checkout_service.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;

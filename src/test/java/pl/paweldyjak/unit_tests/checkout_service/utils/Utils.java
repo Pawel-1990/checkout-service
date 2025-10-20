@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.utils;
+package pl.paweldyjak.unit_tests.checkout_service.utils;
 
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;

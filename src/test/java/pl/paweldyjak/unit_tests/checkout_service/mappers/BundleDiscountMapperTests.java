@@ -1,10 +1,12 @@
-package pl.paweldyjak.checkout_service.mappers;
+package pl.paweldyjak.unit_tests.checkout_service.mappers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
+import pl.paweldyjak.checkout_service.mappers.ItemMapper;
+import pl.paweldyjak.unit_tests.checkout_service.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
 import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;

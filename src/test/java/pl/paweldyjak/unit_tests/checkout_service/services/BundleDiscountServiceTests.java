@@ -1,6 +1,5 @@
-package pl.paweldyjak.checkout_service.services;
+package pl.paweldyjak.unit_tests.checkout_service.services;
 
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,9 @@ import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.services.BundleDiscountService;
+import pl.paweldyjak.checkout_service.services.ItemService;
+import pl.paweldyjak.unit_tests.checkout_service.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.Collections;

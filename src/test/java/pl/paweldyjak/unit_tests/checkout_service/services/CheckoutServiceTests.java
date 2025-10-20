@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.services;
+package pl.paweldyjak.unit_tests.checkout_service.services;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -19,7 +19,9 @@ import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.services.CheckoutService;
+import pl.paweldyjak.checkout_service.services.ItemService;
+import pl.paweldyjak.unit_tests.checkout_service.utils.Utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

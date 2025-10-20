@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service;
+package pl.paweldyjak.unit_tests.checkout_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
