@@ -3,7 +3,7 @@ package pl.paweldyjak.checkout_service.controllers;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.services.CheckoutService;
@@ -43,12 +43,12 @@ public class CheckoutController {
     }
 
     @PatchMapping("/{id}/add-items")
-    public CheckoutResponse addItemsToCheckout(@PathVariable Long id, @Valid @RequestBody List<ItemsToModifyRequest> items) {
+    public CheckoutResponse addItemsToCheckout(@PathVariable Long id, @Valid @RequestBody List<CheckoutItemInfo> items) {
         return checkoutService.addItemsToCheckout(id, items);
     }
 
     @PatchMapping("/{id}/delete-items")
-    public CheckoutResponse deleteItemsFromCheckout(@PathVariable Long id, @Valid @RequestBody List<ItemsToModifyRequest> items) {
+    public CheckoutResponse deleteItemsFromCheckout(@PathVariable Long id, @Valid @RequestBody List<CheckoutItemInfo> items) {
         return checkoutService.deleteItemsFromCheckout(id, items);
     }
 

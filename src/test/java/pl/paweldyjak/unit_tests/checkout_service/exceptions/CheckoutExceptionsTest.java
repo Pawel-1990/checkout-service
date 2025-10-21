@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.*;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
@@ -51,7 +51,7 @@ public class CheckoutExceptionsTest {
         Checkout checkout = new Checkout();
         checkout.setItems(Map.of("Apple", 2));
 
-        List<ItemsToModifyRequest> itemsToModifyRequestList = Collections.singletonList(ItemsToModifyRequest.builder()
+        List<CheckoutItemInfo> itemsToModifyRequestList = Collections.singletonList(CheckoutItemInfo.builder()
                 .itemName("Apple").quantity(5).build());
 
         assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(itemsToModifyRequestList, checkout));
@@ -60,8 +60,8 @@ public class CheckoutExceptionsTest {
     @Test
     public void testItemNotFoundInCheckoutException() {
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
-        List<ItemsToModifyRequest> itemsToModifyRequestList =
-                Collections.singletonList(ItemsToModifyRequest.builder()
+        List<CheckoutItemInfo> itemsToModifyRequestList =
+                Collections.singletonList(CheckoutItemInfo.builder()
                 .itemName("Apple").quantity(5).build());
         checkoutService.deleteItemsFromCheckout(itemsToModifyRequestList, new Checkout());
 

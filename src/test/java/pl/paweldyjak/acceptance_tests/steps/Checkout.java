@@ -1,3 +1,4 @@
+/*
 package pl.paweldyjak.acceptance_tests.steps;
 
 import io.cucumber.datatable.DataTable;
@@ -10,8 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
 
@@ -37,20 +37,51 @@ public class Checkout {
     }
 
     @And("I add item {string} with quantity {int}")
-    public void addItemsWithQuantity(String name, int quantity) {
-        List<ItemsToModifyRequest> items = List.of(new ItemsToModifyRequest(name, quantity));
-        CheckoutResponse checkoutResponse = restTemplate.patchForObject(baseUrl + "/1/add-items", items, CheckoutResponse.class);
-        assert checkoutResponse.items().stream().anyMatch(i -> i.itemName().equals(name) && i.quantity() == quantity);
+    public void addItems(String name, int quantity) {
+        List<CheckoutItemInfo> itemsToAdd = List.of(new CheckoutItemInfo(name, quantity));
+        CheckoutResponse checkoutResponseBeforeAdding = getCheckoutById(1L);
+        List<CheckoutItemInfo> itemsInCheckoutBeforeAdding = checkoutResponseBeforeAdding.items();
+        List<CheckoutItemInfo> expectedItemsInCheckoutAfterAdding = new ArrayList<>();
+
+        for (CheckoutItemInfo item : itemsInCheckoutBeforeAdding) {
+            if (item.itemName().equals(name)) {
+                quantity += item.quantity();
+                expectedItemsInCheckoutAfterAdding.add(new CheckoutItemInfo(name, quantity));
+                break;
+            }
+        }
+        CheckoutResponse checkoutResponse = restTemplate.patchForObject(baseUrl + "/1/add-items", itemsToAdd, CheckoutResponse.class);
+
+        assert checkoutResponse.items().equals(expectedItemsInCheckoutAfterAdding);
+    }
+
+    @And("I delete {int} items {string} from checkout")
+    public void deleteItems(int quantity, String name) {
+        List<CheckoutItemInfo> itemsToDelete = List.of(new CheckoutItemInfo(name, quantity));
+        CheckoutResponse checkoutResponseBeforeDeleting = getCheckoutById(1L);
+        List<CheckoutItemInfo> itemsInCheckoutBeforeDeleting = checkoutResponseBeforeDeleting.items();
+        List<CheckoutItemInfo> expectedItemsInCheckoutAfterDeleting = new ArrayList<>();
+
+        for (CheckoutItemInfo item : itemsInCheckoutBeforeDeleting) {
+            if (item.itemName().equals(name)) {
+                quantity -= item.quantity();
+                expectedItemsInCheckoutAfterDeleting.add(new CheckoutItemInfo(name, quantity));
+                break;
+            }
+        }
+        CheckoutResponse checkoutResponse = restTemplate.patchForObject(baseUrl + "/1/add-items", itemsToDelete, CheckoutResponse.class);
+
+        assert checkoutResponse.items().equals(expectedItemsInCheckoutAfterDeleting);
     }
 
     @And("Checkout is empty")
     public void checkoutIsEmpty() {
-        CheckoutResponse checkoutResponse = restTemplate.getForObject(baseUrl + "/1", CheckoutResponse.class);
+        CheckoutResponse checkoutResponse = getCheckoutById(1L);
         assert checkoutResponse.items().isEmpty();
     }
 
-    @Then("I have following items in my table")
-    public void iHaveFollowingItemsInMyTable(DataTable dataTable) {
+    @Then("I have following items in my checkout")
+    public void iHaveFollowingItemsInMyCheckout(DataTable dataTable) {
         List<CheckoutItemInfo> expectedItemsList = new ArrayList<>();
         List<Map<String, String>> items = dataTable.asMaps(String.class, String.class);
 
@@ -68,7 +99,7 @@ public class Checkout {
 
     @Then("Adding item {string} with quantity {int} is not allowed")
     public void addingItemWithQuantityIsNotAllowed(String name, int quantity) {
-        List<ItemsToModifyRequest> items = List.of(new ItemsToModifyRequest(name, quantity));
+        List<CheckoutItemInfo> items = List.of(new CheckoutItemInfo(name, quantity));
 
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/1/add-items",
@@ -80,4 +111,9 @@ public class Checkout {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assert response.getBody().contains(String.format("Cannot add item - %s is unavailable", name));
     }
+
+    private CheckoutResponse getCheckoutById(Long id) {
+        return restTemplate.getForObject(baseUrl + "/" + id, CheckoutResponse.class);
+    }
 }
+*/

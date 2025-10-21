@@ -5,15 +5,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
 import pl.paweldyjak.checkout_service.controllers.BundleDiscountController;
 import pl.paweldyjak.unit_tests.checkout_service.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
@@ -24,8 +28,7 @@ import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-@WebMvcTest(controllers = BundleDiscountController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = CheckoutServiceApplication.class)
 public class BundleDiscountControllerTest {
     private final Long id = 1L;
     private final Long id2 = 2L;

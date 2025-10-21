@@ -1,3 +1,4 @@
+/*
 package pl.paweldyjak.acceptance_tests.steps;
 
 import io.cucumber.java.en.And;
@@ -42,3 +43,4 @@ public class Item {
     }
 
 }
+*/

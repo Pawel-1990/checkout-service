@@ -3,14 +3,14 @@ package pl.paweldyjak.unit_tests.checkout_service.services;
 import static org.assertj.core.api.Assertions.*;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemInfo;
+import org.springframework.boot.test.context.SpringBootTest;
+import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptItemDetails;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
@@ -30,6 +30,7 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest(classes = CheckoutServiceApplication.class)
 @ExtendWith(MockitoExtension.class)
 public class CheckoutServiceTests {
     private final long id = 1L;
@@ -112,7 +113,7 @@ public class CheckoutServiceTests {
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
         when(itemService.getAllAvailableItemNames()).thenReturn(List.of("Apple"));
         CheckoutResponse actualResponse = checkoutService.addItemsToCheckout(id,
-                List.of(ItemsToModifyRequest.builder().itemName("Apple").quantity(5).build()));
+                List.of(CheckoutItemInfo.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
                 .usingRecursiveComparison()
@@ -145,7 +146,7 @@ public class CheckoutServiceTests {
         when(itemService.getAllItemsEntities()).thenReturn(itemEntities);
 
         CheckoutResponse actualResponse = checkoutService.deleteItemsFromCheckout(id,
-                List.of(ItemsToModifyRequest.builder().itemName("Apple").quantity(5).build()));
+                List.of(CheckoutItemInfo.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
                 .usingRecursiveComparison()
