@@ -1,13 +1,17 @@
-DESCRIPTION:
-
-The Checkout Service is an application that allows users to purchase items from a store using a built-in API. Users can make purchases and access available discounts. After completing a payment, the user receives a receipt containing all details about the transaction.
+# CHECKOUT SERVICE
 
 
-HOW TO RUN:
+## DESCRIPTION:
+
+The Checkout Service is an application that allows users to purchase items from a store using a built-in API. Users can make purchases and access 
+available discounts. After completing a payment, the user receives a receipt containing all details about the transaction.
+
+
+## HOW TO RUN:
 
 The application can be run using any IDE or directly from the command line.
 
-Running from the command line:
+### Running from the command line:
 
 Clone the repository from GitHub:
 git clone https://github.com/username/repository-name.git
@@ -19,7 +23,7 @@ Run the application:
 java -jar target/application-name-0.0.1-SNAPSHOT.jar
 
 
-USEFUL ENDPOINTS:
+## USEFUL ENDPOINTS:
 
 The service provides all basic endpoints. The complete list can be viewed via Swagger UI at:
 http://localhost:8080/swagger-ui/index.html
@@ -33,7 +37,7 @@ JDBC URL: jdbc:h2:mem
 Username: user
 Password: password
 
-EXAMPLE SERVICE FLOW:
+## EXAMPLE SERVICE FLOW:
 
 POST /api/checkouts – create a new checkout
 
