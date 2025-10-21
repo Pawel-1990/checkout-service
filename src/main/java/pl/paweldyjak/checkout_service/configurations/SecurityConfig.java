@@ -25,7 +25,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/error").permitAll()
-                // TODO: add authorization
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
