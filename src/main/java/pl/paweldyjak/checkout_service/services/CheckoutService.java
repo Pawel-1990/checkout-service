@@ -57,7 +57,7 @@ public class CheckoutService {
 
         areItemsAvailable(items.stream().map(ItemsToModifyRequest::itemName).toList());
 
-        existingCheckout = addItemsToCheckout(items, existingCheckout);
+        addItemsToCheckout(items, existingCheckout);
 
         List<ReceiptItemDetails> receiptItemDetails = getDetailedItemsListFromCheckoutItems(existingCheckout);
 
@@ -68,7 +68,7 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(existingCheckout);
     }
 
-    private Checkout addItemsToCheckout(List<ItemsToModifyRequest> newItems, Checkout checkout) {
+    private void addItemsToCheckout(List<ItemsToModifyRequest> newItems, Checkout checkout) {
         Map<String, Integer> items = checkout.getItems();
 
         for (ItemsToModifyRequest item : newItems) {
@@ -77,7 +77,6 @@ public class CheckoutService {
             items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
         }
         checkout.setItems(items);
-        return checkout;
     }
     @Transactional(readOnly = true)
     public void areItemsAvailable(List<String> itemNames) {
