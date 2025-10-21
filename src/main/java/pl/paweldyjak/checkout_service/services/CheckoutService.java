@@ -258,7 +258,7 @@ public class CheckoutService {
     }
 
     public ReceiptResponse getReceiptByCheckoutId(Long id) {
-        Optional<Checkout> checkout = checkoutRepository.findById(id);
-        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new CheckoutNotFoundException(id));
+        Optional<Checkout> checkout = Optional.ofNullable(checkoutRepository.findById(id).orElseThrow(() -> new CheckoutNotFoundException(id)));
+        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new ReceiptNotFoundException(id));
     }
 }

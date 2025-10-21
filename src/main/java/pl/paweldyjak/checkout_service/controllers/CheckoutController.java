@@ -40,7 +40,7 @@ public class CheckoutController {
         return checkoutService.getAllCheckouts();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public CheckoutResponse createCheckout() {
         logger.info("Received POST request to create checkout");

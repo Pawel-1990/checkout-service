@@ -32,7 +32,7 @@ public class Checkout {
 
     @Given("I create a new checkout")
     public void createNewCheckout() {
-        CheckoutResponse checkoutResponse = restTemplate.postForObject(baseUrl, null, CheckoutResponse.class);
+        CheckoutResponse checkoutResponse = restTemplate.postForObject(baseUrl + "/create", null, CheckoutResponse.class);
     }
 
     @And("I add item {string} with quantity {int}")
