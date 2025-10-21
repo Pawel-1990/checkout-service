@@ -1,4 +1,4 @@
-package pl.paweldyjak.unit_tests.checkout_service.exceptions;
+package pl.paweldyjak.checkout_service.unit_tests.exceptions;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

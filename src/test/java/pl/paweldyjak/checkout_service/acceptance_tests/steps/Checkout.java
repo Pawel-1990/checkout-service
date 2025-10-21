@@ -1,5 +1,4 @@
-/*
-package pl.paweldyjak.acceptance_tests.steps;
+package pl.paweldyjak.checkout_service.acceptance_tests.steps;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
@@ -116,4 +115,3 @@ public class Checkout {
         return restTemplate.getForObject(baseUrl + "/" + id, CheckoutResponse.class);
     }
 }
-*/

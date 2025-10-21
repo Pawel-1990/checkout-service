@@ -1,5 +1,4 @@
-/*
-package pl.paweldyjak.acceptance_tests.steps;
+package pl.paweldyjak.checkout_service.acceptance_tests.steps;
 
 import io.cucumber.java.en.And;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +42,3 @@ public class Item {
     }
 
 }
-*/
