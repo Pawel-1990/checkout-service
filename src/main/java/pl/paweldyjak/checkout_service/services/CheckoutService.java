@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -231,5 +232,10 @@ public class CheckoutService {
         checkout.setReceipt(checkoutMapper.mapToReceiptResponse(checkout, receiptItemDetailsList));
         Checkout updatedCheckout = checkoutRepository.save(checkout);
         return updatedCheckout.getReceipt();
+    }
+
+    public ReceiptResponse getReceiptByCheckoutId(Long id) {
+        Optional<Checkout> checkout = checkoutRepository.findById(id);
+        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new CheckoutNotFoundException(id));
     }
 }

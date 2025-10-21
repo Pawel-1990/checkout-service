@@ -28,6 +28,12 @@ public class CheckoutController {
         return checkoutService.getCheckoutById(id);
     }
 
+    @GetMapping("/{id}/receipt")
+    ReceiptResponse getReceiptById(@PathVariable Long id) {
+        logger.info("Received GET request to get receipt with id: {}", id);
+        return checkoutService.getReceiptByCheckoutId(id);
+    }
+
     @GetMapping
     List<CheckoutResponse> getAllCheckouts() {
         logger.info("Received GET request to get all checkouts");
