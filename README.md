@@ -48,11 +48,11 @@ GET /api/bundle-discounts – return the list of available store promotions
 PATCH /api/checkouts/1/add-items – add specific products to the cart; discounts are applied based on quantities. Example request body:
 [
 {
-"item_name": "Banana",
+"itemName": "Banana",
 "quantity": 6
 },
 {
-"item_name": "Apple",
+"itemName": "Apple",
 "quantity": 10
 }
 ]
@@ -62,7 +62,7 @@ GET /api/checkouts/1 – return checkout details including applied discounts
 PATCH /api/checkouts/1/add-items – add the item “Pear” to obtain a bundle discount. Example request body:
 [
 {
-"item_name": "Pear",
+"itemName": "Pear",
 "quantity": 1
 }
 ]
