@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.services.CheckoutService;
@@ -54,13 +55,13 @@ public class CheckoutController {
     }
 
     @PatchMapping("/{id}/add-items")
-    public CheckoutResponse addItemsToCheckout(@PathVariable Long id, @Valid @RequestBody List<ItemsToModifyRequest> items) {
+    public CheckoutResponse addItemsToCheckout(@PathVariable Long id, @Valid @RequestBody List<CheckoutItemInfo> items) {
         logger.info("Received PATCH request to add items to checkout with id: {}", id);
         return checkoutService.addItemsToCheckout(id, items);
     }
 
     @PatchMapping("/{id}/delete-items")
-    public CheckoutResponse deleteItemsFromCheckout(@PathVariable Long id, @Valid @RequestBody List<ItemsToModifyRequest> items) {
+    public CheckoutResponse deleteItemsFromCheckout(@PathVariable Long id, @Valid @RequestBody List<CheckoutItemInfo> items) {
         logger.info("Received PATCH request to delete items from checkout with id: {}", id);
         return checkoutService.deleteItemsFromCheckout(id, items);
     }

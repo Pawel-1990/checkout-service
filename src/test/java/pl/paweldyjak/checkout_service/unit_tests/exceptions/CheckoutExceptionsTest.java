@@ -51,21 +51,21 @@ public class CheckoutExceptionsTest {
         Checkout checkout = new Checkout();
         checkout.setItems(Map.of("Apple", 2));
 
-        List<CheckoutItemInfo> itemsToModifyRequestList = Collections.singletonList(CheckoutItemInfo.builder()
+        List<CheckoutItemInfo> checkoutItemInfos = Collections.singletonList(CheckoutItemInfo.builder()
                 .itemName("Apple").quantity(5).build());
 
-        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(itemsToModifyRequestList, checkout));
+        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(checkoutItemInfos, checkout));
     }
 
     @Test
     public void testItemNotFoundInCheckoutException() {
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
-        List<CheckoutItemInfo> itemsToModifyRequestList =
+        List<CheckoutItemInfo> checkoutItemInfos =
                 Collections.singletonList(CheckoutItemInfo.builder()
                 .itemName("Apple").quantity(5).build());
-        checkoutService.deleteItemsFromCheckout(itemsToModifyRequestList, new Checkout());
+        checkoutService.deleteItemsFromCheckout(checkoutItemInfos, new Checkout());
 
-        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.deleteItemsFromCheckout(1L, itemsToModifyRequestList));
+        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.deleteItemsFromCheckout(1L, checkoutItemInfos));
     }
 
     @Test
