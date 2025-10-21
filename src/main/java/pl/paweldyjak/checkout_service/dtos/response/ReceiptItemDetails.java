@@ -10,7 +10,7 @@ public record ReceiptItemDetails(
         int quantity,
         int discountedQuantity,
         BigDecimal unitPrice,
-        boolean discountApplies,
+        boolean quantityDiscountApplies,
         BigDecimal priceBeforeDiscount,
         BigDecimal discountAmount,
         BigDecimal priceAfterDiscount

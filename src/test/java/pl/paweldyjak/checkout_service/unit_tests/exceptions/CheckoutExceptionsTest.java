@@ -13,6 +13,7 @@ import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.*;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
+import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 import pl.paweldyjak.checkout_service.services.CheckoutService;
 import pl.paweldyjak.checkout_service.services.ItemService;
 
@@ -23,13 +24,14 @@ public class CheckoutExceptionsTest {
     @Mock private CheckoutRepository checkoutRepository;
     @Mock private ItemService itemService;
     @Mock private CheckoutMapper checkoutMapper;
+    @Mock private BundleDiscountService bundleDiscountService;
 
     CheckoutService checkoutService;
 
 
     @BeforeEach
     void setup() {
-        checkoutService = new CheckoutService(checkoutRepository, itemService, checkoutMapper);
+        checkoutService = new CheckoutService(checkoutRepository, itemService, checkoutMapper, bundleDiscountService);
     }
 
     @Test

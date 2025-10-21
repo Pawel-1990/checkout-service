@@ -19,6 +19,7 @@ import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
+import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 import pl.paweldyjak.checkout_service.services.CheckoutService;
 import pl.paweldyjak.checkout_service.services.ItemService;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
@@ -38,12 +39,13 @@ public class CheckoutServiceTests {
 
     @Mock private CheckoutRepository checkoutRepository;
     @Mock private ItemService itemService;
+    @Mock private BundleDiscountService bundleDiscountService;
     private CheckoutMapper checkoutMapper;
 
     @BeforeEach
     void setup() {
         checkoutMapper = new CheckoutMapper();
-        checkoutService = new CheckoutService(checkoutRepository, itemService, checkoutMapper);
+        checkoutService = new CheckoutService(checkoutRepository, itemService, checkoutMapper, bundleDiscountService);
     }
 
     @Test
@@ -140,10 +142,13 @@ public class CheckoutServiceTests {
                 .items(Collections.singletonList(CheckoutItemInfo.builder().itemName("Apple").quantity(1).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(0))
+                .bundleDiscountAmount(BigDecimal.ZERO)
+                .quantityDiscountAmount(BigDecimal.ZERO)
                 .finalPrice(BigDecimal.valueOf(50))
                 .build();
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
         when(itemService.getAllItemsEntities()).thenReturn(itemEntities);
+        when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
 
         CheckoutResponse actualResponse = checkoutService.deleteItemsFromCheckout(id,
                 List.of(CheckoutItemInfo.builder().itemName("Apple").quantity(5).build()));
@@ -210,7 +215,7 @@ public class CheckoutServiceTests {
                 .quantity(6)
                 .discountedQuantity(3)
                 .unitPrice(BigDecimal.valueOf(50))
-                .discountApplies(true)
+                .quantityDiscountApplies(true)
                 .priceBeforeDiscount(BigDecimal.valueOf(300))
                 .priceAfterDiscount(BigDecimal.valueOf(240))
                 .discountAmount(BigDecimal.valueOf(60))

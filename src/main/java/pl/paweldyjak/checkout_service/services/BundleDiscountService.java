@@ -12,6 +12,7 @@ import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.Bund
 import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
 import pl.paweldyjak.checkout_service.repositories.BundleDiscountRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,10 @@ public class BundleDiscountService {
     public BundleDiscountResponse getBundleDiscountResponseById(Long id) {
         BundleDiscount discount = getBundleDiscountById(id);
         return bundleDiscountMapper.mapToBundleDiscountResponse(discount);
+    }
+
+    public BigDecimal getSumDiscountsForItemNames(List<String> names) {
+        return bundleDiscountRepository.getSumDiscountsForItemNames(names);
     }
 
     @Transactional

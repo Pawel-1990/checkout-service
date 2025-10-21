@@ -52,6 +52,12 @@ public class Checkout {
     @Column(name = "price_before_discount", precision = 19, scale = 2)
     private BigDecimal priceBeforeDiscount;
 
+    @Column(name = "quantity_discount", precision = 19, scale = 2)
+    private BigDecimal quantityDiscount;
+
+    @Column(name = "bundle_discount", precision = 19, scale = 2)
+    private BigDecimal bundleDiscount;
+
     @Column(name = "total_discount", precision = 19, scale = 2)
     private BigDecimal totalDiscount;
 
@@ -63,6 +69,7 @@ public class Checkout {
         checkout.setCreatedAt(LocalDateTime.now());
         checkout.setStatus(CheckoutStatus.ACTIVE);
         checkout.setPriceBeforeDiscount(BigDecimal.ZERO);
+        checkout.setBundleDiscount(BigDecimal.ZERO);
         checkout.setTotalDiscount(BigDecimal.ZERO);
         checkout.setFinalPrice(BigDecimal.ZERO);
 

@@ -25,11 +25,13 @@ public class CheckoutService {
     private final CheckoutRepository checkoutRepository;
     private final ItemService itemService;
     private final CheckoutMapper checkoutMapper;
+    private final BundleDiscountService bundleDiscountService;
 
-    public CheckoutService(CheckoutRepository checkoutRepository, ItemService itemService, CheckoutMapper checkoutMapper) {
+    public CheckoutService(CheckoutRepository checkoutRepository, ItemService itemService, CheckoutMapper checkoutMapper, BundleDiscountService bundleDiscountService) {
         this.checkoutRepository = checkoutRepository;
         this.itemService = itemService;
         this.checkoutMapper = checkoutMapper;
+        this.bundleDiscountService = bundleDiscountService;
     }
 
     @Transactional(readOnly = true)
@@ -139,6 +141,7 @@ public class CheckoutService {
                     if (entry.getValue() == 0) {
                         items.remove(itemName);
                     }
+                    break;
                 }
             }
         }
@@ -185,7 +188,7 @@ public class CheckoutService {
                             .quantity((int) itemQuantity)
                             .discountedQuantity(requiredQuantity)
                             .unitPrice(item.getNormalPrice())
-                            .discountApplies((int) itemQuantity >= requiredQuantity)
+                            .quantityDiscountApplies((int) itemQuantity >= requiredQuantity)
                             .priceBeforeDiscount(priceBeforeDiscount)
                             .discountAmount(discount)
                             .priceAfterDiscount(finalPrice)
@@ -204,18 +207,38 @@ public class CheckoutService {
         }
 
         BigDecimal priceBeforeDiscount = new BigDecimal(0);
-        BigDecimal totalDiscount = new BigDecimal(0);
+        BigDecimal quantityDiscount = new BigDecimal(0);
         BigDecimal finalPrice = new BigDecimal(0);
 
         for (ReceiptItemDetails receiptItemDetails : receiptItemDetailsList) {
             priceBeforeDiscount = priceBeforeDiscount.add(receiptItemDetails.priceBeforeDiscount());
-            totalDiscount = totalDiscount.add(receiptItemDetails.discountAmount());
+            quantityDiscount = quantityDiscount.add(receiptItemDetails.discountAmount());
             finalPrice = finalPrice.add(receiptItemDetails.priceAfterDiscount());
         }
 
         checkout.setPriceBeforeDiscount(priceBeforeDiscount);
-        checkout.setTotalDiscount(totalDiscount);
+        checkout.setQuantityDiscount(quantityDiscount);
         checkout.setFinalPrice(finalPrice);
+
+        checkout = applyBundleDiscounts(checkout);
+        return checkout;
+    }
+
+    public Checkout applyBundleDiscounts(Checkout checkout) {
+
+        // reset bundle discount and total discount and recalculate them
+        checkout.setBundleDiscount(BigDecimal.ZERO);
+        if (checkout.getQuantityDiscount().compareTo(BigDecimal.ZERO) == 0) {
+            checkout.setTotalDiscount(BigDecimal.ZERO);
+        }
+
+        List<String> listOfNames = checkout.getItems().keySet().stream().toList();
+        BigDecimal priceBundleDiscount = bundleDiscountService.getSumDiscountsForItemNames(listOfNames);
+        if (priceBundleDiscount.compareTo(BigDecimal.ZERO) > 0) {
+            checkout.setBundleDiscount(priceBundleDiscount);
+            checkout.setTotalDiscount(checkout.getQuantityDiscount().add(priceBundleDiscount));
+            checkout.setFinalPrice(checkout.getFinalPrice().subtract(checkout.getTotalDiscount()));
+        }
         return checkout;
     }
 

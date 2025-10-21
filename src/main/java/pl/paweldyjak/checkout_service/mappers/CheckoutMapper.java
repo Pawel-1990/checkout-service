@@ -28,6 +28,8 @@ public class CheckoutMapper {
                 .items(mapItemsToCheckoutItemInfo(checkout))
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
+                .quantityDiscountAmount(checkout.getQuantityDiscount())
+                .bundleDiscountAmount(checkout.getBundleDiscount())
                 .finalPrice(checkout.getFinalPrice())
                 .build();
     }
@@ -40,6 +42,8 @@ public class CheckoutMapper {
                 .items(receiptItemDetails)
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
+                .quantityDiscount(checkout.getQuantityDiscount())
+                .bundleDiscount(checkout.getBundleDiscount())
                 .finalPrice(checkout.getFinalPrice())
                 .build();
     }

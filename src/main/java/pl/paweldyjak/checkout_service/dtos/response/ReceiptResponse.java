@@ -13,6 +13,8 @@ public record ReceiptResponse(
         List<ReceiptItemDetails> items,
         CheckoutStatus status,
         BigDecimal priceBeforeDiscount,
+        BigDecimal quantityDiscount,
+        BigDecimal bundleDiscount,
         BigDecimal totalDiscount,
         BigDecimal finalPrice
 ) {}

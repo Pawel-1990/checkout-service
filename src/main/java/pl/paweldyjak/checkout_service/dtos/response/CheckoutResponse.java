@@ -15,6 +15,8 @@ public record CheckoutResponse(
         CheckoutStatus status,
         List<CheckoutItemInfo> items,
         BigDecimal priceBeforeDiscount,
+        BigDecimal quantityDiscountAmount,
+        BigDecimal bundleDiscountAmount,
         BigDecimal totalDiscount,
         BigDecimal finalPrice
 ) {}
