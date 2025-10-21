@@ -1,10 +1,10 @@
-package pl.paweldyjak.checkout_service.utils;
+package pl.paweldyjak.checkout_service.unit_tests.utils;
 
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;

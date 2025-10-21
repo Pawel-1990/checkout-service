@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.controllers;
+package pl.paweldyjak.checkout_service.unit_tests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
+import pl.paweldyjak.checkout_service.controllers.CheckoutController;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
@@ -127,7 +128,7 @@ public class CheckoutControllerTest {
     @Test
     public void testAddItemsToCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        ItemsToModifyRequest itemsToModifyRequest = ItemsToModifyRequest.builder()
+        CheckoutItemInfo itemsToModifyRequest = CheckoutItemInfo.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();
@@ -153,7 +154,7 @@ public class CheckoutControllerTest {
     @Test
     public void testDeleteItemsFromCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        ItemsToModifyRequest itemsToModifyRequest = ItemsToModifyRequest.builder()
+        CheckoutItemInfo itemsToModifyRequest = CheckoutItemInfo.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();

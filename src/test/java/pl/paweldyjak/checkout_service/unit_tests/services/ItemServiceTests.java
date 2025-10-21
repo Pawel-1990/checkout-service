@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.services;
+package pl.paweldyjak.checkout_service.unit_tests.services;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,8 @@ import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.repositories.ItemRepository;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.services.ItemService;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.Collections;
