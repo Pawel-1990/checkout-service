@@ -237,7 +237,7 @@ public class CheckoutService {
         if (priceBundleDiscount.compareTo(BigDecimal.ZERO) > 0) {
             checkout.setBundleDiscount(priceBundleDiscount);
             checkout.setTotalDiscount(checkout.getQuantityDiscount().add(priceBundleDiscount));
-            checkout.setFinalPrice(checkout.getFinalPrice().subtract(checkout.getTotalDiscount()));
+            checkout.setFinalPrice(checkout.getPriceBeforeDiscount().subtract(checkout.getTotalDiscount()));
         }
         return checkout;
     }
