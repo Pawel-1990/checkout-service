@@ -3,7 +3,6 @@
 ## Overview
 
 This service implements a **market checkout component** — a backend system for scanning items, calculating totals, applying multi-item and bundle discounts, and generating receipts.  
-It follows the business requirements described in the *Checkout Component 3.0* specification.
 
 The system is designed using **Spring Boot** and exposes a **RESTful API** documented via **OpenAPI 3 (Swagger UI)**.
 
