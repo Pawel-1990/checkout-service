@@ -6,10 +6,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
@@ -19,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static pl.paweldyjak.checkout_service.acceptance_tests.utils.Utils.getAuthorizationHeader;
 
 public class Checkout {
 
@@ -32,13 +30,19 @@ public class Checkout {
 
     @Given("I create a new checkout")
     public void createNewCheckout() {
-        CheckoutResponse checkoutResponse = restTemplate.postForObject(baseUrl + "/create", null, CheckoutResponse.class);
+        ResponseEntity<CheckoutResponse> response = restTemplate.exchange(
+                baseUrl + "/create",
+                HttpMethod.POST,
+                new HttpEntity<>(getAuthorizationHeader("customer", "customer")),
+                CheckoutResponse.class);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
-    @And("I add item {string} with quantity {int}")
-    public void addItems(String name, int quantity) {
+    @And("I add item {string} with quantity {int} to checkout with ID {int}")
+    public void addItems(String name, int quantity, int id) {
         List<CheckoutItemInfo> itemsToAdd = List.of(new CheckoutItemInfo(name, quantity));
-        CheckoutResponse checkoutResponseBeforeAdding = getCheckoutById(1L);
+        CheckoutResponse checkoutResponseBeforeAdding = getCheckoutById((long) id);
         List<CheckoutItemInfo> itemsInCheckoutBeforeAdding = checkoutResponseBeforeAdding.items();
         List<CheckoutItemInfo> expectedItemsInCheckoutAfterAdding = new ArrayList<>();
 
@@ -49,49 +53,56 @@ public class Checkout {
                 break;
             }
         }
-        CheckoutResponse checkoutResponse = restTemplate.patchForObject(baseUrl + "/1/add-items", itemsToAdd, CheckoutResponse.class);
 
-        assert checkoutResponse.items().equals(expectedItemsInCheckoutAfterAdding);
+        ResponseEntity<CheckoutResponse> checkoutResponse = restTemplate.exchange(
+                baseUrl + "/" + (long) id + "/add-items",
+                HttpMethod.PATCH,
+                new HttpEntity<>(itemsToAdd, getAuthorizationHeader("customer", "customer")),
+                CheckoutResponse.class);
+
+        assert checkoutResponse.getBody().items().equals(expectedItemsInCheckoutAfterAdding);
     }
 
-    @And("I delete {int} items {string} from checkout")
-    public void deleteItems(int quantity, String name) {
+    @And("I delete {int} items {string} from checkout with ID {int}")
+    public void deleteItems(int quantity, String name, int id) {
         List<CheckoutItemInfo> itemsToDelete = List.of(new CheckoutItemInfo(name, quantity));
-        CheckoutResponse checkoutResponseBeforeDeleting = getCheckoutById(1L);
-        List<CheckoutItemInfo> itemsInCheckoutBeforeDeleting = checkoutResponseBeforeDeleting.items();
         List<CheckoutItemInfo> expectedItemsInCheckoutAfterDeleting = new ArrayList<>();
+        CheckoutResponse checkoutResponseBeforeDeleting = getCheckoutById(1L);
 
-        for (CheckoutItemInfo item : itemsInCheckoutBeforeDeleting) {
+        for (CheckoutItemInfo item : checkoutResponseBeforeDeleting.items()) {
             if (item.itemName().equals(name)) {
                 quantity -= item.quantity();
                 expectedItemsInCheckoutAfterDeleting.add(new CheckoutItemInfo(name, quantity));
                 break;
             }
         }
-        CheckoutResponse checkoutResponse = restTemplate.patchForObject(baseUrl + "/1/add-items", itemsToDelete, CheckoutResponse.class);
+        ResponseEntity<CheckoutResponse> checkoutResponse = restTemplate.exchange(
+                baseUrl + "/" + (long) id + "/delete-items",
+                HttpMethod.PATCH,
+                new HttpEntity<>(itemsToDelete, getAuthorizationHeader("customer", "customer")),
+                CheckoutResponse.class);
 
-        assert checkoutResponse.items().equals(expectedItemsInCheckoutAfterDeleting);
+        assert checkoutResponse.getBody().items().equals(expectedItemsInCheckoutAfterDeleting);
     }
 
-    @And("Checkout is empty")
-    public void checkoutIsEmpty() {
-        CheckoutResponse checkoutResponse = getCheckoutById(1L);
+    @And("Checkout with ID {int} is empty")
+    public void checkoutIsEmpty(int id) {
+        CheckoutResponse checkoutResponse = getCheckoutById((long) id);
+
         assert checkoutResponse.items().isEmpty();
     }
 
-    @Then("I have following items in my checkout")
-    public void iHaveFollowingItemsInMyCheckout(DataTable dataTable) {
+    @Then("I have following items in my checkout with ID {int}")
+    public void iHaveFollowingItemsInMyCheckout(int id, DataTable dataTable) {
         List<CheckoutItemInfo> expectedItemsList = new ArrayList<>();
-        List<Map<String, String>> items = dataTable.asMaps(String.class, String.class);
 
-        for (Map<String, String> item : items) {
+        for (Map<String, String> item : dataTable.asMaps(String.class, String.class)) {
             String itemName = item.get("Item");
             int quantity = Integer.parseInt(item.get("Quantity"));
             CheckoutItemInfo checkoutItemInfo = new CheckoutItemInfo(itemName, quantity);
             expectedItemsList.add(checkoutItemInfo);
         }
-
-        CheckoutResponse checkoutResponse = restTemplate.getForObject(baseUrl + "/1", CheckoutResponse.class);
+        CheckoutResponse checkoutResponse = getCheckoutById((long) id);
 
         assert expectedItemsList.equals(checkoutResponse.items());
     }
@@ -103,7 +114,7 @@ public class Checkout {
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/1/add-items",
                 HttpMethod.PATCH,
-                new HttpEntity<>(items),
+                new HttpEntity<>(items, getAuthorizationHeader("customer", "customer")),
                 String.class
         );
 
@@ -112,6 +123,12 @@ public class Checkout {
     }
 
     private CheckoutResponse getCheckoutById(Long id) {
-        return restTemplate.getForObject(baseUrl + "/" + id, CheckoutResponse.class);
+        ResponseEntity<CheckoutResponse> response = restTemplate.exchange(
+                baseUrl + "/" + id,
+                HttpMethod.GET,
+                new HttpEntity<>(getAuthorizationHeader("customer", "customer")),
+                CheckoutResponse.class);
+
+        return response.getBody();
     }
 }

@@ -65,23 +65,37 @@ These annotations describe every endpoint, expected request/response structure, 
 🧾 ItemRequest
 {
 "name": "A",
-"price": 40.0,
-"multiPriceQuantity": 3,
-"multiPriceValue": 30.0
+"normalPrice": 40.0,
+"requiredQuantity": 3,
+"specialPrice": 30.0
 }
 
 🧮 BundleDiscountRequest
 {
-"itemXId": 1,
-"itemYId": 2,
-"discountValue": 5.0
+"firstItemId": 1,
+"secondItemId": 2,
+"discountAmount": 5.0
 }
 
 💰 CheckoutItemInfo
 {
-"itemId": 1,
+"itemName": "Apple,
 "quantity": 2
 }
+
+## 🔐 Security & Authorization
+
+This service uses Spring Security for authentication and authorization.
+
+Two users are predefined:
+
+| Username   | Password   | Role     | Access Rights                                                                                                                                                                                                                  |
+| ---------- | ---------- | -------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `admin`    | `admin`    | ADMIN    | Full access to all API endpoints                                                                                                                                                                                               |
+| `customer` | `customer` | CUSTOMER | Access to all **GET** endpoints, two **POST** endpoints:<br>• `/api/checkouts/create`<br>• `/api/checkouts/{id}/pay` and two **PATCH** endpoints:<br>• `/api/checkouts/{id}/add-items`<br>• `/api/checkouts/{id}/delete-items` |
+
+
+Authentication is handled via HTTP Basic Auth, and access control is enforced based on user roles.
 
 ## 🧑‍💻 Developer Notes
 

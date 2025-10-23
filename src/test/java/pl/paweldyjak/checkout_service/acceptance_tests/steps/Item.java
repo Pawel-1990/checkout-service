@@ -4,10 +4,13 @@ import io.cucumber.java.en.And;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import pl.paweldyjak.checkout_service.repositories.ItemRepository;
 
 import java.util.List;
+
+import static pl.paweldyjak.checkout_service.acceptance_tests.utils.Utils.getAuthorizationHeader;
 
 public class Item {
 
@@ -24,7 +27,7 @@ public class Item {
         List<String> items = restTemplate.exchange(
                 baseUrl + "/names",
                 HttpMethod.GET,
-                null,
+                new HttpEntity<>(getAuthorizationHeader("customer", "customer")),
                 new ParameterizedTypeReference<List<String>>() {}
         ).getBody();
         assert items.stream().anyMatch(n -> n.equals(itemName));
@@ -35,7 +38,7 @@ public class Item {
         List<String> items = restTemplate.exchange(
                 baseUrl + "/names",
                 HttpMethod.GET,
-                null,
+                new HttpEntity<>(getAuthorizationHeader("customer", "customer")),
                 new ParameterizedTypeReference<List<String>>() {}
         ).getBody();
         assert items.stream().noneMatch(n -> n.equals(itemName));
