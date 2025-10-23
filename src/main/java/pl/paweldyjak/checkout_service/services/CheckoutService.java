@@ -219,6 +219,7 @@ public class CheckoutService {
         checkout.setPriceBeforeDiscount(priceBeforeDiscount);
         checkout.setQuantityDiscount(quantityDiscount);
         checkout.setFinalPrice(finalPrice);
+        checkout.setTotalDiscount(quantityDiscount);
 
         checkout = applyBundleDiscounts(checkout);
         return checkout;
