@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
@@ -122,7 +121,7 @@ public class ItemServiceTests {
 
     @Test
     public void testPartialUpdateItem() {
-        ItemPatchRequest itemPatchRequest = ItemPatchRequest.builder()
+        ItemRequest itemRequest = ItemRequest.builder()
                 .specialPrice(BigDecimal.valueOf(5))
                 .build();
         Item item = Utils.buildItem(id);
@@ -139,7 +138,7 @@ public class ItemServiceTests {
                 .build();
         when(itemRepository.save(any())).thenReturn(updatedItem);
 
-        ItemResponse actualResponse = itemService.partialUpdateItem(id, itemPatchRequest);
+        ItemResponse actualResponse = itemService.partialUpdateItem(id, itemRequest);
 
         assert expectedResponse.equals(actualResponse);
 

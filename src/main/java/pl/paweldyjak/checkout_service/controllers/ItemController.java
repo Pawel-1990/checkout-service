@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.services.ItemService;
 
@@ -116,10 +115,10 @@ public class ItemController {
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @PatchMapping("/{id}")
-    public ItemResponse partialUpdateItem(@Valid @RequestBody ItemPatchRequest itemPatchRequest, @Parameter(description = "Unique ID of the item",
+    public ItemResponse partialUpdateItem(@Valid @RequestBody ItemRequest itemRequest, @Parameter(description = "Unique ID of the item",
             example = "1") @PathVariable Long id) {
         logger.info("Received PATCH request to partial update item with id: {}", id);
-        return itemService.partialUpdateItem(id, itemPatchRequest);
+        return itemService.partialUpdateItem(id, itemRequest);
     }
 
 

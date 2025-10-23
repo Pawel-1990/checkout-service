@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.paweldyjak.checkout_service.controllers.ItemController;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.services.ItemService;
@@ -147,16 +146,16 @@ public class ItemControllerTest {
     @Test
     public void testPartialUpdateItem() throws Exception {
         ItemResponse itemResponse = Utils.buildItemResponse(id);
-        ItemPatchRequest itemPatchRequest = ItemPatchRequest.builder()
+        ItemRequest itemRequest = ItemRequest.builder()
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
                 .requiredQuantity(3)
                 .specialPrice(BigDecimal.valueOf(40))
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(itemPatchRequest);
+        String requestBody = objectMapper.writeValueAsString(itemRequest);
 
-        when(itemService.partialUpdateItem(id, itemPatchRequest)).thenReturn(itemResponse);
+        when(itemService.partialUpdateItem(id, itemRequest)).thenReturn(itemResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/items/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -169,7 +168,7 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
-        verify(itemService).partialUpdateItem(id, itemPatchRequest);
+        verify(itemService).partialUpdateItem(id, itemRequest);
     }
 
     @Test

@@ -3,7 +3,6 @@ package pl.paweldyjak.checkout_service.services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
@@ -75,7 +74,7 @@ public class ItemService {
         return itemMapper.mapToItemResponse(updatedItem);
     }
 
-    public ItemResponse partialUpdateItem(Long itemId, ItemPatchRequest patchRequest) {
+    public ItemResponse partialUpdateItem(Long itemId, ItemRequest patchRequest) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
