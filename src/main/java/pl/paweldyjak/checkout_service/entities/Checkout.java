@@ -69,6 +69,7 @@ public class Checkout {
         checkout.setCreatedAt(LocalDateTime.now());
         checkout.setStatus(CheckoutStatus.ACTIVE);
         checkout.setPriceBeforeDiscount(BigDecimal.ZERO);
+        checkout.setQuantityDiscount(BigDecimal.ZERO);
         checkout.setBundleDiscount(BigDecimal.ZERO);
         checkout.setTotalDiscount(BigDecimal.ZERO);
         checkout.setFinalPrice(BigDecimal.ZERO);

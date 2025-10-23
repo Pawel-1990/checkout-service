@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record CheckoutItemInfo(
+public record CheckoutItem(
         @NotBlank(message = "Item name cannot be blank")
         String itemName,
 

@@ -4,7 +4,7 @@ import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
@@ -46,7 +46,7 @@ public class Utils {
         return CheckoutResponse.builder()
                 .id(checkoutId)
                 .status(CheckoutStatus.ACTIVE)
-                .items(Collections.singletonList(CheckoutItemInfo.builder().itemName("Apple").quantity(6).build()))
+                .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(6).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(10))
                 .finalPrice(BigDecimal.valueOf(40))

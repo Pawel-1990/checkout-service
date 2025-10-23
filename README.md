@@ -77,7 +77,7 @@ These annotations describe every endpoint, expected request/response structure, 
 "discountAmount": 5.0
 }
 
-💰 CheckoutItemInfo
+💰 CheckoutItem
 {
 "itemName": "Apple,
 "quantity": 2

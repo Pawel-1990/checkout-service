@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
-import pl.paweldyjak.checkout_service.dtos.response.ReceiptItemDetails;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemDetails;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.entities.Item;
@@ -107,7 +107,7 @@ public class CheckoutServiceTests {
         CheckoutResponse expectedResponse = CheckoutResponse.builder()
                 .id(id)
                 .status(CheckoutStatus.ACTIVE)
-                .items(Collections.singletonList(CheckoutItemInfo.builder().itemName("Apple").quantity(11).build()))
+                .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(11).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(10))
                 .finalPrice(BigDecimal.valueOf(40))
@@ -115,7 +115,7 @@ public class CheckoutServiceTests {
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
         when(itemService.getAllAvailableItemNames()).thenReturn(List.of("Apple"));
         CheckoutResponse actualResponse = checkoutService.addItemsToCheckout(id,
-                List.of(CheckoutItemInfo.builder().itemName("Apple").quantity(5).build()));
+                List.of(CheckoutItem.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
                 .usingRecursiveComparison()
@@ -139,7 +139,7 @@ public class CheckoutServiceTests {
         CheckoutResponse expectedResponse = CheckoutResponse.builder()
                 .id(id)
                 .status(CheckoutStatus.ACTIVE)
-                .items(Collections.singletonList(CheckoutItemInfo.builder().itemName("Apple").quantity(1).build()))
+                .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(1).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(0))
                 .bundleDiscountAmount(BigDecimal.ZERO)
@@ -151,7 +151,7 @@ public class CheckoutServiceTests {
         when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
 
         CheckoutResponse actualResponse = checkoutService.deleteItemsFromCheckout(id,
-                List.of(CheckoutItemInfo.builder().itemName("Apple").quantity(5).build()));
+                List.of(CheckoutItem.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
                 .usingRecursiveComparison()
@@ -176,7 +176,7 @@ public class CheckoutServiceTests {
     public void testPay() {
         Checkout checkout = buildCheckoutForPay();
 
-        ReceiptItemDetails receiptItemDetails = buildReceiptItemDetailsForPay();
+        CheckoutItemDetails checkoutItemDetails = buildReceiptItemDetailsForPay();
 
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
 
@@ -184,7 +184,7 @@ public class CheckoutServiceTests {
         when(itemService.getAllItemsEntities()).thenReturn(itemEntities);
         when(checkoutRepository.save(any())).thenReturn(checkout);
 
-        ReceiptResponse receiptResponse = buildReceiptResponseForPay(id, receiptItemDetails);
+        ReceiptResponse receiptResponse = buildReceiptResponseForPay(id, checkoutItemDetails);
 
         ReceiptResponse actualResponse = checkoutService.pay(id);
 
@@ -198,19 +198,19 @@ public class CheckoutServiceTests {
         verify(checkoutRepository, times(1)).save(any());
     }
 
-    public static ReceiptResponse buildReceiptResponseForPay(Long id, ReceiptItemDetails receiptItemDetails) {
+    public static ReceiptResponse buildReceiptResponseForPay(Long id, CheckoutItemDetails checkoutItemDetails) {
         return ReceiptResponse.builder()
                 .checkoutId(id)
                 .status(CheckoutStatus.PAID)
-                .items(Collections.singletonList(receiptItemDetails))
+                .items(Collections.singletonList(checkoutItemDetails))
                 .totalDiscount(BigDecimal.valueOf(10))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .finalPrice(BigDecimal.valueOf(40))
                 .build();
     }
 
-    public static ReceiptItemDetails buildReceiptItemDetailsForPay() {
-        return ReceiptItemDetails.builder()
+    public static CheckoutItemDetails buildReceiptItemDetailsForPay() {
+        return CheckoutItemDetails.builder()
                 .itemName("Apple")
                 .quantity(6)
                 .discountedQuantity(3)

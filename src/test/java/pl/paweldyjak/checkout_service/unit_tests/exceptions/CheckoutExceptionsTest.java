@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.*;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
@@ -53,21 +53,21 @@ public class CheckoutExceptionsTest {
         Checkout checkout = new Checkout();
         checkout.setItems(Map.of("Apple", 2));
 
-        List<CheckoutItemInfo> checkoutItemInfos = Collections.singletonList(CheckoutItemInfo.builder()
+        List<CheckoutItem> checkoutItems = Collections.singletonList(CheckoutItem.builder()
                 .itemName("Apple").quantity(5).build());
 
-        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(checkoutItemInfos, checkout));
+        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(checkoutItems, checkout));
     }
 
     @Test
     public void testItemNotFoundInCheckoutException() {
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
-        List<CheckoutItemInfo> checkoutItemInfos =
-                Collections.singletonList(CheckoutItemInfo.builder()
+        List<CheckoutItem> checkoutItems =
+                Collections.singletonList(CheckoutItem.builder()
                 .itemName("Apple").quantity(5).build());
-        checkoutService.deleteItemsFromCheckout(checkoutItemInfos, new Checkout());
+        checkoutService.deleteItemsFromCheckout(checkoutItems, new Checkout());
 
-        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.deleteItemsFromCheckout(1L, checkoutItemInfos));
+        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.deleteItemsFromCheckout(1L, checkoutItems));
     }
 
     @Test

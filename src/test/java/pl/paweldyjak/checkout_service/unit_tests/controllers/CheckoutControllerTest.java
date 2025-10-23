@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.paweldyjak.checkout_service.controllers.CheckoutController;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
@@ -128,14 +128,14 @@ public class CheckoutControllerTest {
     @Test
     public void testAddItemsToCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        CheckoutItemInfo checkoutItemInfo = CheckoutItemInfo.builder()
+        CheckoutItem checkoutItem = CheckoutItem.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(checkoutItemInfo));
+        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(checkoutItem));
 
-        when(checkoutService.addItemsToCheckout(id, Collections.singletonList(checkoutItemInfo))).thenReturn(checkoutResponse);
+        when(checkoutService.addItemsToCheckout(id, Collections.singletonList(checkoutItem))).thenReturn(checkoutResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/checkouts/{id}/add-items", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -148,20 +148,20 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
-        verify(checkoutService).addItemsToCheckout(id, Collections.singletonList(checkoutItemInfo));
+        verify(checkoutService).addItemsToCheckout(id, Collections.singletonList(checkoutItem));
     }
 
     @Test
     public void testDeleteItemsFromCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        CheckoutItemInfo CheckoutItemInfo = pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo.builder()
+        CheckoutItem checkoutItem = CheckoutItem.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(CheckoutItemInfo));
+        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(checkoutItem));
 
-        when(checkoutService.deleteItemsFromCheckout(id, Collections.singletonList(CheckoutItemInfo))).thenReturn(checkoutResponse);
+        when(checkoutService.deleteItemsFromCheckout(id, Collections.singletonList(checkoutItem))).thenReturn(checkoutResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/checkouts/{id}/delete-items", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -174,7 +174,7 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
-        verify(checkoutService).deleteItemsFromCheckout(id, Collections.singletonList(CheckoutItemInfo));
+        verify(checkoutService).deleteItemsFromCheckout(id, Collections.singletonList(checkoutItem));
     }
 
     @Test

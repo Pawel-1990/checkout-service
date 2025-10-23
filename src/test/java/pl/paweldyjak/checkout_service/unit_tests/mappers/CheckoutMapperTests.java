@@ -5,9 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.entities.Checkout;
@@ -32,7 +32,7 @@ public class CheckoutMapperTests {
                 .id(1L)
                 .createdAt(checkout.getCreatedAt())
                 .status(checkout.getStatus())
-                .items(Collections.singletonList(new CheckoutItemInfo("Apple", 6)))
+                .items(Collections.singletonList(new CheckoutItem("Apple", 6)))
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
                 .finalPrice(checkout.getFinalPrice())
@@ -69,7 +69,7 @@ public class CheckoutMapperTests {
     @Test
     public void testMapItemsToCheckoutItemInfo() {
         Checkout checkout = Utils.buildCheckout();
-        List<CheckoutItemInfo> expectedResponse = List.of(new CheckoutItemInfo("Apple", 6));
+        List<CheckoutItem> expectedResponse = List.of(new CheckoutItem("Apple", 6));
 
         assert expectedResponse.equals(checkoutMapper.mapItemsToCheckoutItemInfo(checkout));
     }

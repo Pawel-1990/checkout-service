@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.repositories.CheckoutRepository;
 
@@ -41,15 +41,15 @@ public class Checkout {
 
     @And("I add item {string} with quantity {int} to checkout with ID {int}")
     public void addItems(String name, int quantity, int id) {
-        List<CheckoutItemInfo> itemsToAdd = List.of(new CheckoutItemInfo(name, quantity));
+        List<CheckoutItem> itemsToAdd = List.of(new CheckoutItem(name, quantity));
         CheckoutResponse checkoutResponseBeforeAdding = getCheckoutById((long) id);
-        List<CheckoutItemInfo> itemsInCheckoutBeforeAdding = checkoutResponseBeforeAdding.items();
-        List<CheckoutItemInfo> expectedItemsInCheckoutAfterAdding = new ArrayList<>();
+        List<CheckoutItem> itemsInCheckoutBeforeAdding = checkoutResponseBeforeAdding.items();
+        List<CheckoutItem> expectedItemsInCheckoutAfterAdding = new ArrayList<>();
 
-        for (CheckoutItemInfo item : itemsInCheckoutBeforeAdding) {
+        for (CheckoutItem item : itemsInCheckoutBeforeAdding) {
             if (item.itemName().equals(name)) {
                 quantity += item.quantity();
-                expectedItemsInCheckoutAfterAdding.add(new CheckoutItemInfo(name, quantity));
+                expectedItemsInCheckoutAfterAdding.add(new CheckoutItem(name, quantity));
                 break;
             }
         }
@@ -65,14 +65,14 @@ public class Checkout {
 
     @And("I delete {int} items {string} from checkout with ID {int}")
     public void deleteItems(int quantity, String name, int id) {
-        List<CheckoutItemInfo> itemsToDelete = List.of(new CheckoutItemInfo(name, quantity));
-        List<CheckoutItemInfo> expectedItemsInCheckoutAfterDeleting = new ArrayList<>();
+        List<CheckoutItem> itemsToDelete = List.of(new CheckoutItem(name, quantity));
+        List<CheckoutItem> expectedItemsInCheckoutAfterDeleting = new ArrayList<>();
         CheckoutResponse checkoutResponseBeforeDeleting = getCheckoutById(1L);
 
-        for (CheckoutItemInfo item : checkoutResponseBeforeDeleting.items()) {
+        for (CheckoutItem item : checkoutResponseBeforeDeleting.items()) {
             if (item.itemName().equals(name)) {
                 quantity -= item.quantity();
-                expectedItemsInCheckoutAfterDeleting.add(new CheckoutItemInfo(name, quantity));
+                expectedItemsInCheckoutAfterDeleting.add(new CheckoutItem(name, quantity));
                 break;
             }
         }
@@ -94,13 +94,13 @@ public class Checkout {
 
     @Then("I have following items in my checkout with ID {int}")
     public void iHaveFollowingItemsInMyCheckout(int id, DataTable dataTable) {
-        List<CheckoutItemInfo> expectedItemsList = new ArrayList<>();
+        List<CheckoutItem> expectedItemsList = new ArrayList<>();
 
         for (Map<String, String> item : dataTable.asMaps(String.class, String.class)) {
             String itemName = item.get("Item");
             int quantity = Integer.parseInt(item.get("Quantity"));
-            CheckoutItemInfo checkoutItemInfo = new CheckoutItemInfo(itemName, quantity);
-            expectedItemsList.add(checkoutItemInfo);
+            CheckoutItem checkoutItem = new CheckoutItem(itemName, quantity);
+            expectedItemsList.add(checkoutItem);
         }
         CheckoutResponse checkoutResponse = getCheckoutById((long) id);
 
@@ -109,7 +109,7 @@ public class Checkout {
 
     @Then("Adding item {string} with quantity {int} is not allowed")
     public void addingItemWithQuantityIsNotAllowed(String name, int quantity) {
-        List<CheckoutItemInfo> items = List.of(new CheckoutItemInfo(name, quantity));
+        List<CheckoutItem> items = List.of(new CheckoutItem(name, quantity));
 
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/1/add-items",

@@ -10,7 +10,7 @@ import java.util.List;
 public record ReceiptResponse(
         Long checkoutId,
         String paymentDate,
-        List<ReceiptItemDetails> items,
+        List<CheckoutItemDetails> items,
         CheckoutStatus status,
         BigDecimal priceBeforeDiscount,
         BigDecimal quantityDiscount,
