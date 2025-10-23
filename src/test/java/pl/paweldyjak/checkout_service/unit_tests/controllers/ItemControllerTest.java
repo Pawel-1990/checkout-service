@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.controllers;
+package pl.paweldyjak.checkout_service.unit_tests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.controllers.ItemController;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.request.ItemPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
 import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
@@ -49,9 +50,9 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.special_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
         verify(itemService).getItemById(id);
     }
@@ -69,14 +70,14 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].special_price").value(BigDecimal.valueOf(40)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].specialPrice").value(BigDecimal.valueOf(40)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(id2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].special_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].specialPrice").value(BigDecimal.valueOf(40)));
 
         verify(itemService).getAllItems();
     }
@@ -113,9 +114,9 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.special_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
         verify(itemService).updateItem(id, itemRequest);
     }
@@ -136,9 +137,9 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.special_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
         verify(itemService).updateItem(id, itemRequest);
     }
@@ -164,9 +165,9 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Apple"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.normal_price").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.required_quantity").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.special_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.normalPrice").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
         verify(itemService).partialUpdateItem(id, itemPatchRequest);
     }

@@ -1,6 +1,7 @@
 package pl.paweldyjak.checkout_service.dtos.response;
 
 import lombok.Builder;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 
 import java.math.BigDecimal;
@@ -14,6 +15,8 @@ public record CheckoutResponse(
         CheckoutStatus status,
         List<CheckoutItemInfo> items,
         BigDecimal priceBeforeDiscount,
+        BigDecimal quantityDiscountAmount,
+        BigDecimal bundleDiscountAmount,
         BigDecimal totalDiscount,
         BigDecimal finalPrice
 ) {}

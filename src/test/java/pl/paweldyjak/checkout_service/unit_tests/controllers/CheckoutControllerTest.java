@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.controllers;
+package pl.paweldyjak.checkout_service.unit_tests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -10,8 +10,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
+import pl.paweldyjak.checkout_service.controllers.CheckoutController;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
@@ -49,9 +50,9 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
         verify(checkoutService).getCheckoutById(id);
     }
@@ -70,14 +71,14 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].final_price").value(BigDecimal.valueOf(40)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].finalPrice").value(BigDecimal.valueOf(40)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(id2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].finalPrice").value(BigDecimal.valueOf(40)));
 
         verify(checkoutService).getAllCheckouts();
     }
@@ -88,14 +89,14 @@ public class CheckoutControllerTest {
 
         when(checkoutService.createCheckout()).thenReturn(checkoutResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/checkouts")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/checkouts/create")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
         verify(checkoutService).createCheckout();
     }
@@ -115,11 +116,11 @@ public class CheckoutControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/checkouts/{id}/pay", id)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.checkout_id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.checkoutId").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
         verify(checkoutService).pay(id);
     }
@@ -127,14 +128,14 @@ public class CheckoutControllerTest {
     @Test
     public void testAddItemsToCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        ItemsToModifyRequest itemsToModifyRequest = ItemsToModifyRequest.builder()
+        CheckoutItemInfo checkoutItemInfo = CheckoutItemInfo.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(itemsToModifyRequest));
+        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(checkoutItemInfo));
 
-        when(checkoutService.addItemsToCheckout(id, Collections.singletonList(itemsToModifyRequest))).thenReturn(checkoutResponse);
+        when(checkoutService.addItemsToCheckout(id, Collections.singletonList(checkoutItemInfo))).thenReturn(checkoutResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/checkouts/{id}/add-items", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -143,24 +144,24 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
-        verify(checkoutService).addItemsToCheckout(id, Collections.singletonList(itemsToModifyRequest));
+        verify(checkoutService).addItemsToCheckout(id, Collections.singletonList(checkoutItemInfo));
     }
 
     @Test
     public void testDeleteItemsFromCheckout() throws Exception {
         CheckoutResponse checkoutResponse = Utils.buildCheckoutResponse(id);
-        ItemsToModifyRequest itemsToModifyRequest = ItemsToModifyRequest.builder()
+        CheckoutItemInfo CheckoutItemInfo = pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo.builder()
                 .itemName("Apple")
                 .quantity(5)
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(itemsToModifyRequest));
+        String requestBody = objectMapper.writeValueAsString(Collections.singletonList(CheckoutItemInfo));
 
-        when(checkoutService.deleteItemsFromCheckout(id, Collections.singletonList(itemsToModifyRequest))).thenReturn(checkoutResponse);
+        when(checkoutService.deleteItemsFromCheckout(id, Collections.singletonList(CheckoutItemInfo))).thenReturn(checkoutResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/checkouts/{id}/delete-items", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -169,11 +170,11 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price_before_discount").value(BigDecimal.valueOf(50)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.total_discount").value(BigDecimal.valueOf(10)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.final_price").value(BigDecimal.valueOf(40)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.priceBeforeDiscount").value(BigDecimal.valueOf(50)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
-        verify(checkoutService).deleteItemsFromCheckout(id, Collections.singletonList(itemsToModifyRequest));
+        verify(checkoutService).deleteItemsFromCheckout(id, Collections.singletonList(CheckoutItemInfo));
     }
 
     @Test

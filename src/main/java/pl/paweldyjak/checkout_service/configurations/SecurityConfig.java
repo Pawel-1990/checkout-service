@@ -2,7 +2,6 @@ package pl.paweldyjak.checkout_service.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -26,16 +25,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer -> configurer
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/error").permitAll()
-
-                .requestMatchers(HttpMethod.GET, "/**").hasRole("CUSTOMER")
-                .requestMatchers(HttpMethod.POST, "/api/checkouts").hasRole("CUSTOMER")
-                .requestMatchers(HttpMethod.POST, "/api/checkouts/*/pay").hasRole("CUSTOMER")
-                .requestMatchers(HttpMethod.PATCH, "/api/checkouts/*/add-items").hasRole("CUSTOMER")
-                .requestMatchers(HttpMethod.PATCH, "/api/checkouts/*/delete-items").hasRole("CUSTOMER")
-
-                .requestMatchers("/**").hasRole("ADMIN")
-
+                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated());
+
 
         // Allows using h2-console
         http.csrf(CsrfConfigurer::disable);

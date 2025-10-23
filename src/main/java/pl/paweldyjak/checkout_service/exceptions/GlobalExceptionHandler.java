@@ -58,6 +58,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ReceiptNotFoundException.class)
+    public ResponseEntity<Object> handleEmptyCheckout(ReceiptNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new LinkedHashMap<>();

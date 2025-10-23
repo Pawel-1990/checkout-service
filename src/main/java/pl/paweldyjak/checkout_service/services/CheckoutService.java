@@ -2,7 +2,7 @@ package pl.paweldyjak.checkout_service.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.paweldyjak.checkout_service.dtos.request.ItemsToModifyRequest;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptItemDetails;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,11 +25,13 @@ public class CheckoutService {
     private final CheckoutRepository checkoutRepository;
     private final ItemService itemService;
     private final CheckoutMapper checkoutMapper;
+    private final BundleDiscountService bundleDiscountService;
 
-    public CheckoutService(CheckoutRepository checkoutRepository, ItemService itemService, CheckoutMapper checkoutMapper) {
+    public CheckoutService(CheckoutRepository checkoutRepository, ItemService itemService, CheckoutMapper checkoutMapper, BundleDiscountService bundleDiscountService) {
         this.checkoutRepository = checkoutRepository;
         this.itemService = itemService;
         this.checkoutMapper = checkoutMapper;
+        this.bundleDiscountService = bundleDiscountService;
     }
 
     @Transactional(readOnly = true)
@@ -51,11 +54,11 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(savedCheckout);
     }
 
-    public CheckoutResponse addItemsToCheckout(Long checkoutId, List<ItemsToModifyRequest> items) {
+    public CheckoutResponse addItemsToCheckout(Long checkoutId, List<CheckoutItemInfo> items) {
         Checkout existingCheckout = checkoutRepository.findById(checkoutId)
                 .orElseThrow(() -> new CheckoutNotFoundException(checkoutId));
 
-        areItemsAvailable(items.stream().map(ItemsToModifyRequest::itemName).toList());
+        areItemsAvailable(items.stream().map(CheckoutItemInfo::itemName).toList());
 
         addItemsToCheckout(items, existingCheckout);
 
@@ -68,10 +71,10 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(existingCheckout);
     }
 
-    private void addItemsToCheckout(List<ItemsToModifyRequest> newItems, Checkout checkout) {
+    private void addItemsToCheckout(List<CheckoutItemInfo> newItems, Checkout checkout) {
         Map<String, Integer> items = checkout.getItems();
 
-        for (ItemsToModifyRequest item : newItems) {
+        for (CheckoutItemInfo item : newItems) {
             String itemName = item.itemName();
             int quantity = item.quantity();
             items.put(itemName, items.getOrDefault(itemName, 0) + quantity);
@@ -89,11 +92,11 @@ public class CheckoutService {
         }
     }
 
-    public CheckoutResponse deleteItemsFromCheckout(Long id, List<ItemsToModifyRequest> items) {
+    public CheckoutResponse deleteItemsFromCheckout(Long id, List<CheckoutItemInfo> items) {
         Checkout existingCheckout = checkoutRepository.findById(id)
                 .orElseThrow(() -> new CheckoutNotFoundException(id));
 
-        List<String> itemNamesToDelete = items.stream().map(ItemsToModifyRequest::itemName).toList();
+        List<String> itemNamesToDelete = items.stream().map(CheckoutItemInfo::itemName).toList();
         List<String> itemNamesInCheckout = existingCheckout.getItems().keySet().stream().toList();
 
         // check if all items are available in checkout
@@ -119,10 +122,10 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(existingCheckout);
     }
 
-    public Checkout deleteItemsFromCheckout(List<ItemsToModifyRequest> itemsToRemove, Checkout checkout) {
+    public Checkout deleteItemsFromCheckout(List<CheckoutItemInfo> itemsToRemove, Checkout checkout) {
         Map<String, Integer> items = checkout.getItems();
 
-        for (ItemsToModifyRequest item : itemsToRemove) {
+        for (CheckoutItemInfo item : itemsToRemove) {
             String itemName = item.itemName();
             int quantity = item.quantity();
             if (quantity <= 0) {
@@ -138,6 +141,7 @@ public class CheckoutService {
                     if (entry.getValue() == 0) {
                         items.remove(itemName);
                     }
+                    break;
                 }
             }
         }
@@ -184,7 +188,7 @@ public class CheckoutService {
                             .quantity((int) itemQuantity)
                             .discountedQuantity(requiredQuantity)
                             .unitPrice(item.getNormalPrice())
-                            .discountApplies((int) itemQuantity >= requiredQuantity)
+                            .quantityDiscountApplies((int) itemQuantity >= requiredQuantity)
                             .priceBeforeDiscount(priceBeforeDiscount)
                             .discountAmount(discount)
                             .priceAfterDiscount(finalPrice)
@@ -203,18 +207,38 @@ public class CheckoutService {
         }
 
         BigDecimal priceBeforeDiscount = new BigDecimal(0);
-        BigDecimal totalDiscount = new BigDecimal(0);
+        BigDecimal quantityDiscount = new BigDecimal(0);
         BigDecimal finalPrice = new BigDecimal(0);
 
         for (ReceiptItemDetails receiptItemDetails : receiptItemDetailsList) {
             priceBeforeDiscount = priceBeforeDiscount.add(receiptItemDetails.priceBeforeDiscount());
-            totalDiscount = totalDiscount.add(receiptItemDetails.discountAmount());
+            quantityDiscount = quantityDiscount.add(receiptItemDetails.discountAmount());
             finalPrice = finalPrice.add(receiptItemDetails.priceAfterDiscount());
         }
 
         checkout.setPriceBeforeDiscount(priceBeforeDiscount);
-        checkout.setTotalDiscount(totalDiscount);
+        checkout.setQuantityDiscount(quantityDiscount);
         checkout.setFinalPrice(finalPrice);
+
+        checkout = applyBundleDiscounts(checkout);
+        return checkout;
+    }
+
+    public Checkout applyBundleDiscounts(Checkout checkout) {
+
+        // reset bundle discount and total discount and recalculate them
+        checkout.setBundleDiscount(BigDecimal.ZERO);
+        if (checkout.getQuantityDiscount().compareTo(BigDecimal.ZERO) == 0) {
+            checkout.setTotalDiscount(BigDecimal.ZERO);
+        }
+
+        List<String> listOfNames = checkout.getItems().keySet().stream().toList();
+        BigDecimal priceBundleDiscount = bundleDiscountService.getSumDiscountsForItemNames(listOfNames);
+        if (priceBundleDiscount.compareTo(BigDecimal.ZERO) > 0) {
+            checkout.setBundleDiscount(priceBundleDiscount);
+            checkout.setTotalDiscount(checkout.getQuantityDiscount().add(priceBundleDiscount));
+            checkout.setFinalPrice(checkout.getPriceBeforeDiscount().subtract(checkout.getTotalDiscount()));
+        }
         return checkout;
     }
 
@@ -231,5 +255,10 @@ public class CheckoutService {
         checkout.setReceipt(checkoutMapper.mapToReceiptResponse(checkout, receiptItemDetailsList));
         Checkout updatedCheckout = checkoutRepository.save(checkout);
         return updatedCheckout.getReceipt();
+    }
+
+    public ReceiptResponse getReceiptByCheckoutId(Long id) {
+        Optional<Checkout> checkout = Optional.ofNullable(checkoutRepository.findById(id).orElseThrow(() -> new CheckoutNotFoundException(id)));
+        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new ReceiptNotFoundException(id));
     }
 }

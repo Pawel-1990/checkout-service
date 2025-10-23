@@ -1,7 +1,7 @@
 package pl.paweldyjak.checkout_service.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptItemDetails;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
@@ -28,6 +28,8 @@ public class CheckoutMapper {
                 .items(mapItemsToCheckoutItemInfo(checkout))
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
+                .quantityDiscountAmount(checkout.getQuantityDiscount())
+                .bundleDiscountAmount(checkout.getBundleDiscount())
                 .finalPrice(checkout.getFinalPrice())
                 .build();
     }
@@ -40,6 +42,8 @@ public class CheckoutMapper {
                 .items(receiptItemDetails)
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
+                .quantityDiscount(checkout.getQuantityDiscount())
+                .bundleDiscount(checkout.getBundleDiscount())
                 .finalPrice(checkout.getFinalPrice())
                 .build();
     }

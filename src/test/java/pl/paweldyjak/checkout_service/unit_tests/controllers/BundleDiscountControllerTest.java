@@ -1,4 +1,4 @@
-package pl.paweldyjak.checkout_service.controllers;
+package pl.paweldyjak.checkout_service.unit_tests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.utils.Utils;
+import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
+import pl.paweldyjak.checkout_service.controllers.BundleDiscountController;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
 import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
@@ -48,9 +50,9 @@ public class BundleDiscountControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.discount_amount").value(BigDecimal.ONE));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.ONE));
 
         verify(checkoutService).getBundleDiscountResponseById(id);
     }
@@ -69,13 +71,13 @@ public class BundleDiscountControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].discount_amount").value(BigDecimal.ONE))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].discountAmount").value(BigDecimal.ONE))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(id2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].discount_amount").value(BigDecimal.TEN));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].discountAmount").value(BigDecimal.TEN));
 
         verify(checkoutService).getAllBundledDiscounts();
     }
@@ -94,9 +96,9 @@ public class BundleDiscountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.discount_amount").value(BigDecimal.ONE));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.ONE));
 
         verify(checkoutService).createBundleDiscount(bundleDiscountRequest);
     }
@@ -115,9 +117,9 @@ public class BundleDiscountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.discount_amount").value(BigDecimal.TEN));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.TEN));
 
         verify(checkoutService).updateBundleDiscount(id, bundleDiscountRequest);
     }
@@ -136,9 +138,9 @@ public class BundleDiscountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.first_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.second_item").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.discount_amount").value(BigDecimal.valueOf(15)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.valueOf(15)));
 
         verify(checkoutService).partialUpdateBundleDiscount(id, bundleDiscountPatchRequest);
     }

@@ -1,12 +1,13 @@
-package pl.paweldyjak.checkout_service.mappers;
+package pl.paweldyjak.checkout_service.unit_tests.mappers;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemInfo;
+import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
+import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemInfo;
 import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
 import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
 import pl.paweldyjak.checkout_service.entities.Checkout;
