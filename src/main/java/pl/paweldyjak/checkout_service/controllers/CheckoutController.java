@@ -121,7 +121,7 @@ public class CheckoutController {
     public CheckoutResponse addItemsToCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
                                                @Valid @RequestBody List<CheckoutItem> items) {
         logger.info("Received PATCH request to add items to checkout with id: {}", id);
-        return checkoutService.updateCheckoutItemsAndPrices(id, items);
+        return checkoutService.updateCheckoutItemsAndPricesForAdding(id, items);
     }
 
 
@@ -138,7 +138,7 @@ public class CheckoutController {
     public CheckoutResponse deleteItemsFromCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
                                                     @Valid @RequestBody List<CheckoutItem> items) {
         logger.info("Received PATCH request to delete items from checkout with id: {}", id);
-        return checkoutService.deleteItemsFromCheckout(id, items);
+        return checkoutService.updateCheckoutItemsAndPricesForDeleting(id, items);
     }
 
 

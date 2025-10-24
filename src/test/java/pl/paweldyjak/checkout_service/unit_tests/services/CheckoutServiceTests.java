@@ -101,7 +101,7 @@ public class CheckoutServiceTests {
     }
 
     @Test
-    public void testUpdateCheckoutItemsAndPrices() {
+    public void testUpdateCheckoutItemsForAddingAndPricesForAdding() {
         Checkout checkout = Utils.buildCheckout();
         CheckoutResponse expectedResponse = CheckoutResponse.builder()
                 .id(id)
@@ -109,15 +109,15 @@ public class CheckoutServiceTests {
                 .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(11).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(550))
                 .totalDiscount(BigDecimal.valueOf(110))
-                .quantityDiscountAmount(BigDecimal.valueOf(110))
+                .quantityDiscount(BigDecimal.valueOf(110))
                 .finalPrice(BigDecimal.valueOf(440))
-                .bundleDiscountAmount(BigDecimal.ZERO)
+                .bundleDiscount(BigDecimal.ZERO)
                 .build();
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
         List<String> itemNamesToAdd = List.of("Apple");
         when(itemService.findAllItemsByNameIn(itemNamesToAdd)).thenReturn(List.of(Utils.buildItem(id)));
         when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
-        CheckoutResponse actualResponse = checkoutService.updateCheckoutItemsAndPrices(id,
+        CheckoutResponse actualResponse = checkoutService.updateCheckoutItemsAndPricesForAdding(id,
                 List.of(CheckoutItem.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
@@ -130,7 +130,7 @@ public class CheckoutServiceTests {
     }
 
     @Test
-    public void testDeleteItemsFromCheckout() {
+    public void testUpdateCheckoutItemsForDeleting() {
         Checkout checkout = Utils.buildCheckout();
         List<Item> itemEntities = Collections.singletonList(Utils.buildItem(id));
         CheckoutResponse expectedResponse = CheckoutResponse.builder()
@@ -139,15 +139,15 @@ public class CheckoutServiceTests {
                 .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(1).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(0))
-                .bundleDiscountAmount(BigDecimal.ZERO)
-                .quantityDiscountAmount(BigDecimal.ZERO)
+                .bundleDiscount(BigDecimal.ZERO)
+                .quantityDiscount(BigDecimal.ZERO)
                 .finalPrice(BigDecimal.valueOf(50))
                 .build();
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
         when(itemService.findAllItemsByNameIn(List.of("Apple"))).thenReturn(itemEntities);
         when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
 
-        CheckoutResponse actualResponse = checkoutService.deleteItemsFromCheckout(id,
+        CheckoutResponse actualResponse = checkoutService.updateCheckoutItemsAndPricesForDeleting(id,
                 List.of(CheckoutItem.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)

@@ -56,7 +56,7 @@ public class CheckoutExceptionsTest {
         List<CheckoutItem> checkoutItems = Collections.singletonList(CheckoutItem.builder()
                 .itemName("Apple").quantity(5).build());
 
-        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.deleteItemsFromCheckout(checkoutItems, checkout));
+        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.updateCheckoutItemsForDeleting(checkoutItems, checkout));
     }
 
     @Test
@@ -65,9 +65,9 @@ public class CheckoutExceptionsTest {
         List<CheckoutItem> checkoutItems =
                 Collections.singletonList(CheckoutItem.builder()
                 .itemName("Apple").quantity(5).build());
-        checkoutService.deleteItemsFromCheckout(checkoutItems, new Checkout());
+        checkoutService.updateCheckoutItemsForDeleting(checkoutItems, new Checkout());
 
-        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.deleteItemsFromCheckout(1L, checkoutItems));
+        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.updateCheckoutItemsAndPricesForDeleting(1L, checkoutItems));
     }
 
     @Test
@@ -76,6 +76,6 @@ public class CheckoutExceptionsTest {
                 .itemName("Apple").quantity(5).build());
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
 
-        assertThrows(ItemUnavailableException.class, () -> checkoutService.updateCheckoutItemsAndPrices(1L, checkoutItems));
+        assertThrows(ItemUnavailableException.class, () -> checkoutService.updateCheckoutItemsAndPricesForAdding(1L, checkoutItems));
     }
 }

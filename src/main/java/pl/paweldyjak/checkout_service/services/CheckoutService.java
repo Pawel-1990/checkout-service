@@ -48,13 +48,25 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(checkout);
     }
 
+    public ReceiptResponse getReceiptByCheckoutId(Long id) {
+        Optional<Checkout> checkout = Optional.ofNullable(checkoutRepository.findById(id).orElseThrow(() -> new CheckoutNotFoundException(id)));
+        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new ReceiptNotFoundException(id));
+    }
+
     public CheckoutResponse createCheckout() {
         Checkout checkout = Checkout.create();
         Checkout savedCheckout = checkoutRepository.save(checkout);
         return checkoutMapper.mapToCheckoutResponse(savedCheckout);
     }
 
-    public CheckoutResponse updateCheckoutItemsAndPrices(Long checkoutId, List<CheckoutItem> newItems) {
+    public void deleteCheckout(Long id) {
+        if (!checkoutRepository.existsById(id)) {
+            throw new CheckoutNotFoundException(id);
+        }
+        checkoutRepository.deleteById(id);
+    }
+
+    public CheckoutResponse updateCheckoutItemsAndPricesForAdding(Long checkoutId, List<CheckoutItem> newItems) {
         Checkout existingCheckout = checkoutRepository.findById(checkoutId)
                 .orElseThrow(() -> new CheckoutNotFoundException(checkoutId));
 
@@ -68,7 +80,7 @@ public class CheckoutService {
                                     .map(Item::getName).toList().contains(itemName)).findFirst().orElse(""));
         }
 
-        existingCheckout = updateCheckoutItems(newItems, existingCheckout);
+        existingCheckout = updateCheckoutItemsForAdding(newItems, existingCheckout);
 
         List<CheckoutItemDetails> checkoutItemDetails = generateCheckoutItemDetails(existingCheckout, itemEntities);
 
@@ -79,7 +91,7 @@ public class CheckoutService {
         return checkoutMapper.mapToCheckoutResponse(existingCheckout);
     }
 
-    private Checkout updateCheckoutItems(List<CheckoutItem> newItems, Checkout checkout) {
+    private Checkout updateCheckoutItemsForAdding(List<CheckoutItem> newItems, Checkout checkout) {
         Map<String, Integer> items = checkout.getItems();
 
         for (CheckoutItem item : newItems) {
@@ -91,36 +103,32 @@ public class CheckoutService {
         return checkout;
     }
 
-    public CheckoutResponse deleteItemsFromCheckout(Long id, List<CheckoutItem> items) {
+    public CheckoutResponse updateCheckoutItemsAndPricesForDeleting(Long id, List<CheckoutItem> items) {
         Checkout existingCheckout = checkoutRepository.findById(id)
                 .orElseThrow(() -> new CheckoutNotFoundException(id));
 
         List<String> itemNamesToDelete = items.stream().map(CheckoutItem::itemName).toList();
         List<String> itemNamesInCheckout = existingCheckout.getItems().keySet().stream().toList();
-        List<Item> itemEntities = itemService.findAllItemsByNameIn(itemNamesToDelete);
 
         if (!itemNamesInCheckout.containsAll(itemNamesToDelete)) {
             throw new ItemNotFoundInCheckout(itemNamesToDelete.stream().filter(itemName -> !itemNamesInCheckout.contains(itemName)).findFirst().orElse(""));
         }
 
-        existingCheckout = deleteItemsFromCheckout(items, existingCheckout);
+        existingCheckout = updateCheckoutItemsForDeleting(items, existingCheckout);
+
+        // getting item entities is necessary to calculate a discount for remaining items in checkout
+        List<Item> itemEntities = itemService.findAllItemsByNameIn(existingCheckout.getItems().keySet().stream().toList());
 
         List<CheckoutItemDetails> checkoutItemDetails = generateCheckoutItemDetails(existingCheckout, itemEntities);
 
-        if (!checkoutItemDetails.isEmpty()) {
-            existingCheckout = updateCheckoutPrices(existingCheckout, checkoutItemDetails);
-        } else {
-            existingCheckout.setFinalPrice(BigDecimal.ZERO);
-            existingCheckout.setTotalDiscount(BigDecimal.ZERO);
-            existingCheckout.setPriceBeforeDiscount(BigDecimal.ZERO);
-        }
+        existingCheckout = updateCheckoutPrices(existingCheckout, checkoutItemDetails);
 
         checkoutRepository.save(existingCheckout);
 
         return checkoutMapper.mapToCheckoutResponse(existingCheckout);
     }
 
-    public Checkout deleteItemsFromCheckout(List<CheckoutItem> itemsToRemove, Checkout checkout) {
+    public Checkout updateCheckoutItemsForDeleting(List<CheckoutItem> itemsToRemove, Checkout checkout) {
         Map<String, Integer> items = checkout.getItems();
 
         for (CheckoutItem item : itemsToRemove) {
@@ -145,13 +153,6 @@ public class CheckoutService {
         }
         checkout.setItems(items);
         return checkout;
-    }
-
-    public void deleteCheckout(Long id) {
-        if (!checkoutRepository.existsById(id)) {
-            throw new CheckoutNotFoundException(id);
-        }
-        checkoutRepository.deleteById(id);
     }
 
     public List<CheckoutItemDetails> generateCheckoutItemDetails(Checkout checkout, List<Item> itemEntities) {
@@ -227,7 +228,7 @@ public class CheckoutService {
         checkout.setPriceBeforeDiscount(priceBeforeDiscount);
         checkout.setQuantityDiscount(quantityDiscount);
         checkout.setBundleDiscount(bundleDiscount);
-        checkout.setTotalDiscount(quantityDiscount);
+        checkout.setTotalDiscount(quantityDiscount.add(bundleDiscount));
         checkout.setFinalPrice(finalPrice);
 
         return checkout;
@@ -248,10 +249,5 @@ public class CheckoutService {
         checkout.setReceipt(checkoutMapper.mapToReceiptResponse(checkout, checkoutItemDetailsList));
         Checkout updatedCheckout = checkoutRepository.save(checkout);
         return updatedCheckout.getReceipt();
-    }
-
-    public ReceiptResponse getReceiptByCheckoutId(Long id) {
-        Optional<Checkout> checkout = Optional.ofNullable(checkoutRepository.findById(id).orElseThrow(() -> new CheckoutNotFoundException(id)));
-        return checkout.map(Checkout::getReceipt).orElseThrow(() -> new ReceiptNotFoundException(id));
     }
 }
