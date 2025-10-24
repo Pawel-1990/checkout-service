@@ -121,7 +121,7 @@ public class CheckoutController {
     public CheckoutResponse addItemsToCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
                                                @Valid @RequestBody List<CheckoutItem> items) {
         logger.info("Received PATCH request to add items to checkout with id: {}", id);
-        return checkoutService.addItemsToCheckout(id, items);
+        return checkoutService.updateCheckoutItemsAndPrices(id, items);
     }
 
 

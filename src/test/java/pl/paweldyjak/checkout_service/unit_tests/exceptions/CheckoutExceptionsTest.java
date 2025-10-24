@@ -72,6 +72,10 @@ public class CheckoutExceptionsTest {
 
     @Test
     public void testItemUnavailableException() {
-        assertThrows(ItemUnavailableException.class, () -> checkoutService.areItemsAvailable(List.of("Apple")));
+        List<CheckoutItem> checkoutItems = Collections.singletonList(CheckoutItem.builder()
+                .itemName("Apple").quantity(5).build());
+        when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
+
+        assertThrows(ItemUnavailableException.class, () -> checkoutService.updateCheckoutItemsAndPrices(1L, checkoutItems));
     }
 }

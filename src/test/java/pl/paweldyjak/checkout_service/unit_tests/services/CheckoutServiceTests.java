@@ -2,7 +2,6 @@ package pl.paweldyjak.checkout_service.unit_tests.services;
 
 import static org.assertj.core.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -102,19 +101,23 @@ public class CheckoutServiceTests {
     }
 
     @Test
-    public void testAddItemsToCheckout() {
+    public void testUpdateCheckoutItemsAndPrices() {
         Checkout checkout = Utils.buildCheckout();
         CheckoutResponse expectedResponse = CheckoutResponse.builder()
                 .id(id)
                 .status(CheckoutStatus.ACTIVE)
                 .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(11).build()))
-                .priceBeforeDiscount(BigDecimal.valueOf(50))
-                .totalDiscount(BigDecimal.valueOf(10))
-                .finalPrice(BigDecimal.valueOf(40))
+                .priceBeforeDiscount(BigDecimal.valueOf(550))
+                .totalDiscount(BigDecimal.valueOf(110))
+                .quantityDiscountAmount(BigDecimal.valueOf(110))
+                .finalPrice(BigDecimal.valueOf(440))
+                .bundleDiscountAmount(BigDecimal.ZERO)
                 .build();
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
-        when(itemService.getAllAvailableItemNames()).thenReturn(List.of("Apple"));
-        CheckoutResponse actualResponse = checkoutService.addItemsToCheckout(id,
+        List<String> itemNamesToAdd = List.of("Apple");
+        when(itemService.findAllItemsByNameIn(itemNamesToAdd)).thenReturn(List.of(Utils.buildItem(id)));
+        when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
+        CheckoutResponse actualResponse = checkoutService.updateCheckoutItemsAndPrices(id,
                 List.of(CheckoutItem.builder().itemName("Apple").quantity(5).build()));
 
         assertThat(actualResponse)
@@ -123,13 +126,7 @@ public class CheckoutServiceTests {
                 .isEqualTo(expectedResponse);
 
         verify(checkoutRepository, times(1)).findById(id);
-        verify(itemService, times(1)).getAllAvailableItemNames();
-    }
-
-    @Test
-    public void testAreItemsAvailable() {
-        when(itemService.getAllAvailableItemNames()).thenReturn(List.of("Apple"));
-        assertDoesNotThrow(() -> checkoutService.areItemsAvailable(List.of("Apple")));
+        verify(itemService, times(1)).findAllItemsByNameIn(itemNamesToAdd);
     }
 
     @Test
@@ -147,7 +144,7 @@ public class CheckoutServiceTests {
                 .finalPrice(BigDecimal.valueOf(50))
                 .build();
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
-        when(itemService.getAllItemsEntities()).thenReturn(itemEntities);
+        when(itemService.findAllItemsByNameIn(List.of("Apple"))).thenReturn(itemEntities);
         when(bundleDiscountService.getSumDiscountsForItemNames(any())).thenReturn(BigDecimal.ZERO);
 
         CheckoutResponse actualResponse = checkoutService.deleteItemsFromCheckout(id,
@@ -159,7 +156,7 @@ public class CheckoutServiceTests {
                 .isEqualTo(expectedResponse);
 
         verify(checkoutRepository, times(1)).findById(id);
-        verify(itemService, times(1)).getAllItemsEntities();
+        verify(itemService, times(1)).findAllItemsByNameIn(List.of("Apple"));
     }
 
     @Test
@@ -181,7 +178,8 @@ public class CheckoutServiceTests {
         when(checkoutRepository.findById(id)).thenReturn(Optional.of(checkout));
 
         List<Item> itemEntities = Collections.singletonList(Utils.buildItem(id));
-        when(itemService.getAllItemsEntities()).thenReturn(itemEntities);
+        List<String> itemNamesToAdd = List.of("Apple");
+        when(itemService.findAllItemsByNameIn(itemNamesToAdd)).thenReturn(itemEntities);
         when(checkoutRepository.save(any())).thenReturn(checkout);
 
         ReceiptResponse receiptResponse = buildReceiptResponseForPay(id, checkoutItemDetails);
@@ -194,7 +192,7 @@ public class CheckoutServiceTests {
                 .isEqualTo(receiptResponse);
 
         verify(checkoutRepository, times(1)).findById(id);
-        verify(itemService, times(1)).getAllItemsEntities();
+        verify(itemService, times(1)).findAllItemsByNameIn(itemNamesToAdd);
         verify(checkoutRepository, times(1)).save(any());
     }
 
@@ -234,5 +232,4 @@ public class CheckoutServiceTests {
         checkout.setFinalPrice(BigDecimal.valueOf(40));
         return checkout;
     }
-
 }

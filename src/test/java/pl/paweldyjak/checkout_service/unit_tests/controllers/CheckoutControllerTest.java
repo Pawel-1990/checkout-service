@@ -135,7 +135,7 @@ public class CheckoutControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(Collections.singletonList(checkoutItem));
 
-        when(checkoutService.addItemsToCheckout(id, Collections.singletonList(checkoutItem))).thenReturn(checkoutResponse);
+        when(checkoutService.updateCheckoutItemsAndPrices(id, Collections.singletonList(checkoutItem))).thenReturn(checkoutResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/checkouts/{id}/add-items", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -148,7 +148,7 @@ public class CheckoutControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalDiscount").value(BigDecimal.valueOf(10)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.finalPrice").value(BigDecimal.valueOf(40)));
 
-        verify(checkoutService).addItemsToCheckout(id, Collections.singletonList(checkoutItem));
+        verify(checkoutService).updateCheckoutItemsAndPrices(id, Collections.singletonList(checkoutItem));
     }
 
     @Test

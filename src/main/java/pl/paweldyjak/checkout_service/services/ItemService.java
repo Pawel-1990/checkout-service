@@ -34,6 +34,11 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<Item> findAllItemsByNameIn(List<String> names) {
+        return itemRepository.findAllByNameIn(names);
+    }
+
+    @Transactional(readOnly = true)
     public List<Item> getAllItemsEntities() {
         return itemRepository.findAll();
     }
