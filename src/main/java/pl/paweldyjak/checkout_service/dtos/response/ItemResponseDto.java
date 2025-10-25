@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 
 @Builder
-public record ItemResponse(
+public record ItemResponseDto(
         Long id,
         String name,
         BigDecimal normalPrice,

@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequestDto;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
 import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 
 import java.util.List;
@@ -38,11 +38,11 @@ public class BundleDiscountController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Bundle discount found",
-                    content = @Content(schema = @Schema(implementation = BundleDiscountResponse.class))),
+                    content = @Content(schema = @Schema(implementation = BundleDiscountResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Bundle discount not found")
     })
     @GetMapping("/{id}")
-    public BundleDiscountResponse getBundleDiscountById(@Parameter(description = "Unique ID of the bundle discount", example = "1") @PathVariable Long id) {
+    public BundleDiscountResponseDto getBundleDiscountById(@Parameter(description = "Unique ID of the bundle discount", example = "1") @PathVariable Long id) {
         logger.info("Received GET request to get bundle discount with id: {}", id);
         return bundleDiscountService.getBundleDiscountResponseById(id);
     }
@@ -53,9 +53,9 @@ public class BundleDiscountController {
             description = "Retrieve a list of all bundle discount rules currently available."
     )
     @ApiResponse(responseCode = "200", description = "List of all bundle discounts",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = BundleDiscountResponse.class))))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = BundleDiscountResponseDto.class))))
     @GetMapping
-    public List<BundleDiscountResponse> getAllBundledDiscounts() {
+    public List<BundleDiscountResponseDto> getAllBundledDiscounts() {
         logger.info("Received GET request to get all bundle discounts");
         return bundleDiscountService.getAllBundledDiscounts();
     }
@@ -67,13 +67,13 @@ public class BundleDiscountController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Bundle discount created successfully",
-                    content = @Content(schema = @Schema(implementation = BundleDiscountResponse.class))),
+                    content = @Content(schema = @Schema(implementation = BundleDiscountResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BundleDiscountResponse createBundleDiscount(
-            @Valid @RequestBody BundleDiscountRequest request) {
+    public BundleDiscountResponseDto createBundleDiscount(
+            @Valid @RequestBody BundleDiscountRequestDto request) {
         logger.info("Received POST request to create bundle discount");
         return bundleDiscountService.createBundleDiscount(request);
     }
@@ -88,10 +88,10 @@ public class BundleDiscountController {
             @ApiResponse(responseCode = "404", description = "Bundle discount not found")
     })
     @PutMapping("/{id}")
-    public BundleDiscountResponse updateBundleDiscount(
+    public BundleDiscountResponseDto updateBundleDiscount(
             @Parameter(description = "Unique ID of the bundle discount", example = "1")
             @PathVariable Long id,
-            @Valid @RequestBody BundleDiscountRequest request) {
+            @Valid @RequestBody BundleDiscountRequestDto request) {
         logger.info("Received PUT request to update bundle discount with id: {}", id);
         return bundleDiscountService.updateBundleDiscount(id, request);
     }
@@ -106,10 +106,10 @@ public class BundleDiscountController {
             @ApiResponse(responseCode = "404", description = "Bundle discount not found")
     })
     @PatchMapping("/{id}")
-    public BundleDiscountResponse partialUpdateBundleDiscount(
+    public BundleDiscountResponseDto partialUpdateBundleDiscount(
             @Parameter(description = "Unique ID of the bundle discount", example = "1")
             @PathVariable Long id,
-            @Valid @RequestBody BundleDiscountPatchRequest request) {
+            @Valid @RequestBody BundleDiscountPatchRequestDto request) {
         logger.info("Received PATCH request to partial update bundle discount with id: {}", id);
         return bundleDiscountService.partialUpdateBundleDiscount(id, request);
     }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record CheckoutItemDetails(
+public record CheckoutItemDetailsDto(
         String itemName,
         int quantity,
         int discountedQuantity,

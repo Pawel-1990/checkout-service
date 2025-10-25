@@ -14,12 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.paweldyjak.checkout_service.CheckoutServiceApplication;
 import pl.paweldyjak.checkout_service.controllers.BundleDiscountController;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequestDto;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
 import pl.paweldyjak.checkout_service.services.BundleDiscountService;
 
 import java.math.BigDecimal;
@@ -42,9 +41,9 @@ public class BundleDiscountControllerTest {
 
     @Test
     public void testGetBundleDiscountById() throws Exception {
-        BundleDiscountResponse bundleDiscountResponse = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
+        BundleDiscountResponseDto bundleDiscountResponseDto = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
 
-        when(checkoutService.getBundleDiscountResponseById(id)).thenReturn(bundleDiscountResponse);
+        when(checkoutService.getBundleDiscountResponseById(id)).thenReturn(bundleDiscountResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/bundle-discounts/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
@@ -61,10 +60,10 @@ public class BundleDiscountControllerTest {
     public void testGetAllBundledDiscounts() throws Exception {
         Long id3 = 3L;
         Long id4 = 4L;
-        BundleDiscountResponse bundleDiscountResponse = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
-        BundleDiscountResponse bundleDiscountResponse2 = Utils.buildBundleDiscountResponse(id2, id3, id4, BigDecimal.TEN);
+        BundleDiscountResponseDto bundleDiscountResponseDto = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
+        BundleDiscountResponseDto bundleDiscountResponseDto2 = Utils.buildBundleDiscountResponse(id2, id3, id4, BigDecimal.TEN);
 
-        when(checkoutService.getAllBundledDiscounts()).thenReturn(Arrays.asList(bundleDiscountResponse, bundleDiscountResponse2));
+        when(checkoutService.getAllBundledDiscounts()).thenReturn(Arrays.asList(bundleDiscountResponseDto, bundleDiscountResponseDto2));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/bundle-discounts")
                         .accept(MediaType.APPLICATION_JSON))
@@ -84,12 +83,12 @@ public class BundleDiscountControllerTest {
 
     @Test
     public void testCreateBundleDiscount() throws Exception {
-        BundleDiscountRequest bundleDiscountRequest = Utils.buildBundleDiscountRequest(id, id2, BigDecimal.ONE);
-        BundleDiscountResponse bundleDiscountResponse = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
+        BundleDiscountRequestDto bundleDiscountRequestDto = Utils.buildBundleDiscountRequest(id, id2, BigDecimal.ONE);
+        BundleDiscountResponseDto bundleDiscountResponseDto = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.ONE);
 
-        String requestBody = objectMapper.writeValueAsString(bundleDiscountRequest);
+        String requestBody = objectMapper.writeValueAsString(bundleDiscountRequestDto);
 
-        when(checkoutService.createBundleDiscount(bundleDiscountRequest)).thenReturn(bundleDiscountResponse);
+        when(checkoutService.createBundleDiscount(bundleDiscountRequestDto)).thenReturn(bundleDiscountResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/bundle-discounts")
                         .content(requestBody)
@@ -100,17 +99,17 @@ public class BundleDiscountControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.ONE));
 
-        verify(checkoutService).createBundleDiscount(bundleDiscountRequest);
+        verify(checkoutService).createBundleDiscount(bundleDiscountRequestDto);
     }
 
     @Test
     public void testUpdateBundleDiscount() throws Exception {
-        BundleDiscountRequest bundleDiscountRequest = Utils.buildBundleDiscountRequest(id, id2, BigDecimal.TEN);
-        BundleDiscountResponse bundleDiscountResponse = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.TEN);
+        BundleDiscountRequestDto bundleDiscountRequestDto = Utils.buildBundleDiscountRequest(id, id2, BigDecimal.TEN);
+        BundleDiscountResponseDto bundleDiscountResponseDto = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.TEN);
 
-        String requestBody = objectMapper.writeValueAsString(bundleDiscountRequest);
+        String requestBody = objectMapper.writeValueAsString(bundleDiscountRequestDto);
 
-        when(checkoutService.updateBundleDiscount(id, bundleDiscountRequest)).thenReturn(bundleDiscountResponse);
+        when(checkoutService.updateBundleDiscount(id, bundleDiscountRequestDto)).thenReturn(bundleDiscountResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/bundle-discounts/{id}", id)
                         .content(requestBody)
@@ -121,17 +120,17 @@ public class BundleDiscountControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.TEN));
 
-        verify(checkoutService).updateBundleDiscount(id, bundleDiscountRequest);
+        verify(checkoutService).updateBundleDiscount(id, bundleDiscountRequestDto);
     }
 
     @Test
     public void BundleDiscountPatchRequest() throws Exception {
-        BundleDiscountPatchRequest bundleDiscountPatchRequest = new BundleDiscountPatchRequest(null, null, BigDecimal.valueOf(15));
-        BundleDiscountResponse bundleDiscountResponse = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.valueOf(15));
+        BundleDiscountPatchRequestDto bundleDiscountPatchRequestDto = new BundleDiscountPatchRequestDto(null, null, BigDecimal.valueOf(15));
+        BundleDiscountResponseDto bundleDiscountResponseDto = Utils.buildBundleDiscountResponse(id, id, id2, BigDecimal.valueOf(15));
 
-        String requestBody = objectMapper.writeValueAsString(bundleDiscountPatchRequest);
+        String requestBody = objectMapper.writeValueAsString(bundleDiscountPatchRequestDto);
 
-        when(checkoutService.partialUpdateBundleDiscount(id, bundleDiscountPatchRequest)).thenReturn(bundleDiscountResponse);
+        when(checkoutService.partialUpdateBundleDiscount(id, bundleDiscountPatchRequestDto)).thenReturn(bundleDiscountResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/bundle-discounts/{id}", id)
                         .content(requestBody)
@@ -142,7 +141,7 @@ public class BundleDiscountControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.secondItem").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.discountAmount").value(BigDecimal.valueOf(15)));
 
-        verify(checkoutService).partialUpdateBundleDiscount(id, bundleDiscountPatchRequest);
+        verify(checkoutService).partialUpdateBundleDiscount(id, bundleDiscountPatchRequestDto);
     }
 
     @Test

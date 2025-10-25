@@ -1,19 +1,19 @@
 package pl.paweldyjak.checkout_service.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.entities.Item;
 
 @Component
 public class ItemMapper {
 
-    public ItemResponse mapToItemResponse(Item item) {
+    public ItemResponseDto mapToItemResponse(Item item) {
         if (item == null) {
             return null;
         }
 
-        return ItemResponse.builder()
+        return ItemResponseDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .normalPrice(item.getNormalPrice())
@@ -22,7 +22,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public Item mapToItemEntity(ItemRequest request) {
+    public Item mapToItemEntity(ItemRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -36,14 +36,14 @@ public class ItemMapper {
         return item;
     }
 
-    public Item updateItemEntity(Item item, ItemRequest itemRequest) {
-        if (item == null || itemRequest == null) {
+    public Item updateItemEntity(Item item, ItemRequestDto itemRequestDto) {
+        if (item == null || itemRequestDto == null) {
             return null;
         }
-        item.setName(itemRequest.name());
-        item.setNormalPrice(itemRequest.normalPrice());
-        item.setRequiredQuantity(itemRequest.requiredQuantity());
-        item.setSpecialPrice(itemRequest.specialPrice());
+        item.setName(itemRequestDto.name());
+        item.setNormalPrice(itemRequestDto.normalPrice());
+        item.setRequiredQuantity(itemRequestDto.requiredQuantity());
+        item.setSpecialPrice(itemRequestDto.specialPrice());
         return item;
     }
 }

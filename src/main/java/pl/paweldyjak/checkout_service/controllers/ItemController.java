@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.services.ItemService;
 
 import java.util.List;
@@ -37,11 +37,11 @@ public class ItemController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Item found",
-                    content = @Content(schema = @Schema(implementation = ItemResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ItemResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @GetMapping("/{id}")
-    public ItemResponse getItemById(@Parameter(description = "Unique ID of the item", example = "1") @PathVariable Long id) {
+    public ItemResponseDto getItemById(@Parameter(description = "Unique ID of the item", example = "1") @PathVariable Long id) {
         logger.info("Received GET request to get item with id: {}", id);
         return itemService.getItemById(id);
     }
@@ -52,9 +52,9 @@ public class ItemController {
             description = "Retrieve a list of all items available in the store."
     )
     @ApiResponse(responseCode = "200", description = "List of all items",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ItemResponse.class))))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ItemResponseDto.class))))
     @GetMapping
-    public List<ItemResponse> getAllItems() {
+    public List<ItemResponseDto> getAllItems() {
         logger.info("Received GET request to get all items");
         return itemService.getAllItems();
     }
@@ -79,12 +79,12 @@ public class ItemController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Item created successfully",
-                    content = @Content(schema = @Schema(implementation = ItemResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ItemResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemResponse createItem(@Valid @RequestBody ItemRequest request) {
+    public ItemResponseDto createItem(@Valid @RequestBody ItemRequestDto request) {
         logger.info("Received POST request to create item");
         return itemService.createItem(request);
     }
@@ -99,10 +99,10 @@ public class ItemController {
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @PutMapping("/{id}")
-    public ItemResponse updateItem(@Valid @RequestBody ItemRequest itemRequest,
-                                   @Parameter(description = "Unique ID of the item", example = "1") @PathVariable Long id) {
+    public ItemResponseDto updateItem(@Valid @RequestBody ItemRequestDto itemRequestDto,
+                                      @Parameter(description = "Unique ID of the item", example = "1") @PathVariable Long id) {
         logger.info("Received PUT request to update item with id: {}", id);
-        return itemService.updateItem(id, itemRequest);
+        return itemService.updateItem(id, itemRequestDto);
     }
 
 
@@ -115,10 +115,10 @@ public class ItemController {
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @PatchMapping("/{id}")
-    public ItemResponse partialUpdateItem(@Valid @RequestBody ItemRequest itemRequest, @Parameter(description = "Unique ID of the item",
+    public ItemResponseDto partialUpdateItem(@Valid @RequestBody ItemRequestDto itemRequestDto, @Parameter(description = "Unique ID of the item",
             example = "1") @PathVariable Long id) {
         logger.info("Received PATCH request to partial update item with id: {}", id);
-        return itemService.partialUpdateItem(id, itemRequest);
+        return itemService.partialUpdateItem(id, itemRequestDto);
     }
 
 

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 
-public record BundleDiscountRequest(
+public record BundleDiscountRequestDto(
         @NotNull(message = "First item ID cannot be null")
         Long firstItemId,
 

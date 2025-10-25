@@ -6,8 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.entities.Item;
 
 import java.math.BigDecimal;
@@ -25,16 +25,16 @@ public class ItemMapperTests {
     public void testMapToCheckoutResponse() {
         Item item = Utils.buildItem(null);
         item.setId(1L);
-        ItemResponse itemResponse = Utils.buildItemResponse(1L);
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(1L);
 
-        assert itemResponse.equals(itemMapper.mapToItemResponse(item));
+        assert itemResponseDto.equals(itemMapper.mapToItemResponse(item));
     }
 
     @Test
     public void testMapToItemEntity() {
-        ItemRequest itemRequest = Utils.buildItemRequest();
+        ItemRequestDto itemRequestDto = Utils.buildItemRequest();
         Item item = Utils.buildItem(null);
-        Item item2 = itemMapper.mapToItemEntity(itemRequest);
+        Item item2 = itemMapper.mapToItemEntity(itemRequestDto);
         assert item.equals(item2);
     }
 
@@ -42,10 +42,10 @@ public class ItemMapperTests {
     public void testUpdateItemEntity() {
         Item item = Utils.buildItem(null);
         item.setSpecialPrice(BigDecimal.valueOf(100));
-        ItemRequest itemRequest = Utils.buildItemRequest();
+        ItemRequestDto itemRequestDto = Utils.buildItemRequest();
 
         Item expectedItem = Utils.buildItem(null);
 
-        assert expectedItem.equals(itemMapper.updateItemEntity(item, itemRequest));
+        assert expectedItem.equals(itemMapper.updateItemEntity(item, itemRequestDto));
     }
 }

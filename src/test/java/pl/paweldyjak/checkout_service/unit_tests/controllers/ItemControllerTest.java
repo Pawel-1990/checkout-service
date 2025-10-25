@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.paweldyjak.checkout_service.controllers.ItemController;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.services.ItemService;
 
 import java.math.BigDecimal;
@@ -40,9 +40,9 @@ public class ItemControllerTest {
 
     @Test
     public void testGetItemById() throws Exception {
-        ItemResponse itemResponse = Utils.buildItemResponse(id);
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(id);
 
-        when(itemService.getItemById(id)).thenReturn(itemResponse);
+        when(itemService.getItemById(id)).thenReturn(itemResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/items/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
@@ -58,10 +58,10 @@ public class ItemControllerTest {
 
     @Test
     public void testGetAllItems() throws Exception {
-        ItemResponse itemResponse = Utils.buildItemResponse(id);
-        ItemResponse itemResponse2 = Utils.buildItemResponse(id2);
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(id);
+        ItemResponseDto itemResponseDto2 = Utils.buildItemResponse(id2);
 
-        when(itemService.getAllItems()).thenReturn(Arrays.asList(itemResponse, itemResponse2));
+        when(itemService.getAllItems()).thenReturn(Arrays.asList(itemResponseDto, itemResponseDto2));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/items")
                         .accept(MediaType.APPLICATION_JSON))
@@ -99,12 +99,12 @@ public class ItemControllerTest {
 
     @Test
     public void testCreateItem() throws Exception {
-        ItemResponse itemResponse = Utils.buildItemResponse(id);
-        ItemRequest itemRequest = Utils.buildItemRequest();
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(id);
+        ItemRequestDto itemRequestDto = Utils.buildItemRequest();
 
-        String requestBody = objectMapper.writeValueAsString(itemRequest);
+        String requestBody = objectMapper.writeValueAsString(itemRequestDto);
 
-        when(itemService.updateItem(id, itemRequest)).thenReturn(itemResponse);
+        when(itemService.updateItem(id, itemRequestDto)).thenReturn(itemResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/items/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -117,17 +117,17 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
-        verify(itemService).updateItem(id, itemRequest);
+        verify(itemService).updateItem(id, itemRequestDto);
     }
 
     @Test
     public void testUpdateItem() throws Exception {
-        ItemResponse itemResponse = Utils.buildItemResponse(id);
-        ItemRequest itemRequest = Utils.buildItemRequest();
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(id);
+        ItemRequestDto itemRequestDto = Utils.buildItemRequest();
 
-        String requestBody = objectMapper.writeValueAsString(itemRequest);
+        String requestBody = objectMapper.writeValueAsString(itemRequestDto);
 
-        when(itemService.updateItem(id, itemRequest)).thenReturn(itemResponse);
+        when(itemService.updateItem(id, itemRequestDto)).thenReturn(itemResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/items/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -140,22 +140,22 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
-        verify(itemService).updateItem(id, itemRequest);
+        verify(itemService).updateItem(id, itemRequestDto);
     }
 
     @Test
     public void testPartialUpdateItem() throws Exception {
-        ItemResponse itemResponse = Utils.buildItemResponse(id);
-        ItemRequest itemRequest = ItemRequest.builder()
+        ItemResponseDto itemResponseDto = Utils.buildItemResponse(id);
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
                 .requiredQuantity(3)
                 .specialPrice(BigDecimal.valueOf(40))
                 .build();
 
-        String requestBody = objectMapper.writeValueAsString(itemRequest);
+        String requestBody = objectMapper.writeValueAsString(itemRequestDto);
 
-        when(itemService.partialUpdateItem(id, itemRequest)).thenReturn(itemResponse);
+        when(itemService.partialUpdateItem(id, itemRequestDto)).thenReturn(itemResponseDto);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/items/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -168,7 +168,7 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.requiredQuantity").value(3))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.specialPrice").value(BigDecimal.valueOf(40)));
 
-        verify(itemService).partialUpdateItem(id, itemRequest);
+        verify(itemService).partialUpdateItem(id, itemRequestDto);
     }
 
     @Test

@@ -5,11 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
-import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponseDto;
+import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponseDto;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 
 import java.util.Collections;
@@ -28,17 +28,17 @@ public class CheckoutMapperTests {
     public void testMapToCheckoutResponse() {
         Checkout checkout = Utils.buildCheckout();
 
-        CheckoutResponse expectedResponse = CheckoutResponse.builder()
+        CheckoutResponseDto expectedResponse = CheckoutResponseDto.builder()
                 .id(1L)
                 .createdAt(checkout.getCreatedAt())
                 .status(checkout.getStatus())
-                .items(Collections.singletonList(new CheckoutItem("Apple", 6)))
+                .items(Collections.singletonList(new CheckoutItemDto("Apple", 6)))
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
                 .finalPrice(checkout.getFinalPrice())
                 .build();
 
-        CheckoutResponse actualResponse = checkoutMapper.mapToCheckoutResponse(checkout);
+        CheckoutResponseDto actualResponse = checkoutMapper.mapToCheckoutResponse(checkout);
 
         assert expectedResponse.equals(actualResponse);
 
@@ -48,7 +48,7 @@ public class CheckoutMapperTests {
     public void testMapToReceiptResponse() {
         Checkout checkout = Utils.buildCheckout();
 
-        ReceiptResponse expectedResponse = ReceiptResponse.builder()
+        ReceiptResponseDto expectedResponse = ReceiptResponseDto.builder()
                 .checkoutId(1L)
                 .status(checkout.getStatus())
                 .items(Collections.emptyList())
@@ -57,7 +57,7 @@ public class CheckoutMapperTests {
                 .finalPrice(checkout.getFinalPrice())
                 .build();
 
-        ReceiptResponse actualResponse = checkoutMapper.mapToReceiptResponse(checkout, Collections.emptyList());
+        ReceiptResponseDto actualResponse = checkoutMapper.mapToReceiptResponse(checkout, Collections.emptyList());
 
         // ignoring the payment date field as it is generated on the fly
         Assertions.assertThat(actualResponse)
@@ -69,7 +69,7 @@ public class CheckoutMapperTests {
     @Test
     public void testMapItemsToCheckoutItemInfo() {
         Checkout checkout = Utils.buildCheckout();
-        List<CheckoutItem> expectedResponse = List.of(new CheckoutItem("Apple", 6));
+        List<CheckoutItemDto> expectedResponse = List.of(new CheckoutItemDto("Apple", 6));
 
         assert expectedResponse.equals(checkoutMapper.mapItemsToCheckoutItemInfo(checkout));
     }

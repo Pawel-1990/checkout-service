@@ -1,12 +1,12 @@
 package pl.paweldyjak.checkout_service.unit_tests.utils;
 
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequestDto;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponseDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.entities.Item;
@@ -20,17 +20,17 @@ import java.util.Map;
 
 public class Utils {
 
-    public static BundleDiscountRequest buildBundleDiscountRequest(Long id1, Long id2, BigDecimal discountAmount) {
-        return new BundleDiscountRequest(id1, id2, discountAmount);
+    public static BundleDiscountRequestDto buildBundleDiscountRequest(Long id1, Long id2, BigDecimal discountAmount) {
+        return new BundleDiscountRequestDto(id1, id2, discountAmount);
     }
 
-    public static BundleDiscountPatchRequest buildBundleDiscountPatchRequest(Long id1, Long id2, BigDecimal discountAmount) {
-        return new BundleDiscountPatchRequest(id1, id2, discountAmount);
+    public static BundleDiscountPatchRequestDto buildBundleDiscountPatchRequest(Long id1, Long id2, BigDecimal discountAmount) {
+        return new BundleDiscountPatchRequestDto(id1, id2, discountAmount);
     }
 
-    public static BundleDiscountResponse buildBundleDiscountResponse(Long bundleDiscountId, Long itemResponseId1, Long itemResponseId2,
-                                                                     BigDecimal discountAmount) {
-        return new BundleDiscountResponse(bundleDiscountId, buildItemResponse(itemResponseId1), buildItemResponse(itemResponseId2), discountAmount);
+    public static BundleDiscountResponseDto buildBundleDiscountResponse(Long bundleDiscountId, Long itemResponseId1, Long itemResponseId2,
+                                                                        BigDecimal discountAmount) {
+        return new BundleDiscountResponseDto(bundleDiscountId, buildItemResponse(itemResponseId1), buildItemResponse(itemResponseId2), discountAmount);
     }
 
     public static BundleDiscount buildBundleDiscount(Long bundleDiscountId, Long firstItemId, Long secondItemId, BigDecimal discountAmount) {
@@ -42,19 +42,19 @@ public class Utils {
         return bundleDiscount;
     }
 
-    public static CheckoutResponse buildCheckoutResponse(Long checkoutId) {
-        return CheckoutResponse.builder()
+    public static CheckoutResponseDto buildCheckoutResponse(Long checkoutId) {
+        return CheckoutResponseDto.builder()
                 .id(checkoutId)
                 .status(CheckoutStatus.ACTIVE)
-                .items(Collections.singletonList(CheckoutItem.builder().itemName("Apple").quantity(6).build()))
+                .items(Collections.singletonList(CheckoutItemDto.builder().itemName("Apple").quantity(6).build()))
                 .priceBeforeDiscount(BigDecimal.valueOf(50))
                 .totalDiscount(BigDecimal.valueOf(10))
                 .finalPrice(BigDecimal.valueOf(40))
                 .build();
     }
 
-    public static ItemResponse buildItemResponse(Long id) {
-        return ItemResponse.builder()
+    public static ItemResponseDto buildItemResponse(Long id) {
+        return ItemResponseDto.builder()
                 .id(id)
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
@@ -63,8 +63,8 @@ public class Utils {
                 .build();
     }
 
-    public static ItemRequest buildItemRequest() {
-        return ItemRequest.builder()
+    public static ItemRequestDto buildItemRequest() {
+        return ItemRequestDto.builder()
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
                 .requiredQuantity(3)

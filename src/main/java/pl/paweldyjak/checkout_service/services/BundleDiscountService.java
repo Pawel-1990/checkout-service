@@ -3,9 +3,9 @@ package pl.paweldyjak.checkout_service.services;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequest;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequestDto;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.bundle_discount_exceptions.BundleDiscountNotFoundException;
@@ -32,7 +32,7 @@ public class BundleDiscountService {
         this.itemService = itemService;
     }
 
-    public List<BundleDiscountResponse> getAllBundledDiscounts() {
+    public List<BundleDiscountResponseDto> getAllBundledDiscounts() {
         return bundleDiscountRepository.findAll().stream()
                 .map(bundleDiscountMapper::mapToBundleDiscountResponse)
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class BundleDiscountService {
                 .orElseThrow(() -> new BundleDiscountNotFoundException(id));
     }
 
-    public BundleDiscountResponse getBundleDiscountResponseById(Long id) {
+    public BundleDiscountResponseDto getBundleDiscountResponseById(Long id) {
         BundleDiscount discount = getBundleDiscountById(id);
         return bundleDiscountMapper.mapToBundleDiscountResponse(discount);
     }
@@ -54,7 +54,7 @@ public class BundleDiscountService {
     }
 
     @Transactional
-    public BundleDiscountResponse createBundleDiscount(@Valid BundleDiscountRequest request) {
+    public BundleDiscountResponseDto createBundleDiscount(@Valid BundleDiscountRequestDto request) {
         validateSameItems(request.firstItemId(), request.secondItemId());
 
         Item firstItem = itemService.getItemEntityById(request.firstItemId());
@@ -66,7 +66,7 @@ public class BundleDiscountService {
     }
 
     @Transactional
-    public BundleDiscountResponse updateBundleDiscount(Long id, @Valid BundleDiscountRequest request) {
+    public BundleDiscountResponseDto updateBundleDiscount(Long id, @Valid BundleDiscountRequestDto request) {
         BundleDiscount existingBundleDiscount = getBundleDiscountById(id);
 
         validateSameItems(request.firstItemId(), request.secondItemId());
@@ -83,7 +83,7 @@ public class BundleDiscountService {
     }
 
     @Transactional
-    public BundleDiscountResponse partialUpdateBundleDiscount(Long id, @Valid BundleDiscountPatchRequest request) {
+    public BundleDiscountResponseDto partialUpdateBundleDiscount(Long id, @Valid BundleDiscountPatchRequestDto request) {
         BundleDiscount existingBundleDiscount = getBundleDiscountById(id);
 
         Long finalFirstItemId = request.firstItemId() != null

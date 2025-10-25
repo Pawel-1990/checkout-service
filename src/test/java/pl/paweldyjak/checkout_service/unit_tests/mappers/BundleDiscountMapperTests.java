@@ -7,8 +7,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.paweldyjak.checkout_service.mappers.BundleDiscountMapper;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.unit_tests.utils.Utils;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
 
@@ -34,21 +34,21 @@ public class BundleDiscountMapperTests {
         bundleDiscount.setSecondItem(Utils.buildItem(2L));
         bundleDiscount.setDiscountAmount(BigDecimal.valueOf(10));
 
-        BundleDiscountResponse expectedResponse = BundleDiscountResponse.builder()
+        BundleDiscountResponseDto expectedResponse = BundleDiscountResponseDto.builder()
                 .id(1L)
                 .firstItem(itemMapper.mapToItemResponse(bundleDiscount.getFirstItem()))
                 .secondItem(itemMapper.mapToItemResponse(bundleDiscount.getSecondItem()))
                 .discountAmount(bundleDiscount.getDiscountAmount())
                 .build();
 
-        BundleDiscountResponse actualResponse = bundleDiscountMapper.mapToBundleDiscountResponse(bundleDiscount);
+        BundleDiscountResponseDto actualResponse = bundleDiscountMapper.mapToBundleDiscountResponse(bundleDiscount);
 
         assert expectedResponse.equals(actualResponse);
     }
 
     @Test
     public void testMapToBundleDiscountEntity() {
-        BundleDiscountRequest bundleDiscountRequest = new BundleDiscountRequest(1L, 2L, BigDecimal.valueOf(10));
+        BundleDiscountRequestDto bundleDiscountRequestDto = new BundleDiscountRequestDto(1L, 2L, BigDecimal.valueOf(10));
         Item firstItem = Utils.buildItem(1L);
         Item secondItem = Utils.buildItem(2L);
 
@@ -57,7 +57,7 @@ public class BundleDiscountMapperTests {
         expectedBundleDiscount.setSecondItem(secondItem);
         expectedBundleDiscount.setDiscountAmount(BigDecimal.valueOf(10));
 
-        BundleDiscount actualBundleDiscount = bundleDiscountMapper.mapToBundleDiscountEntity(bundleDiscountRequest, firstItem, secondItem);
+        BundleDiscount actualBundleDiscount = bundleDiscountMapper.mapToBundleDiscountEntity(bundleDiscountRequestDto, firstItem, secondItem);
 
         assert expectedBundleDiscount.equals(actualBundleDiscount);
     }

@@ -1,10 +1,10 @@
 package pl.paweldyjak.checkout_service.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemDetails;
-import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponseDto;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutItemDetailsDto;
+import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponseDto;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 
 import java.time.LocalDateTime;
@@ -17,11 +17,11 @@ import java.util.Map;
 @Component
 public class CheckoutMapper {
 
-    public CheckoutResponse mapToCheckoutResponse(Checkout checkout) {
+    public CheckoutResponseDto mapToCheckoutResponse(Checkout checkout) {
         if (checkout == null) {
             return null;
         }
-        return CheckoutResponse.builder()
+        return CheckoutResponseDto.builder()
                 .id(checkout.getId())
                 .createdAt(checkout.getCreatedAt())
                 .status(checkout.getStatus())
@@ -34,12 +34,12 @@ public class CheckoutMapper {
                 .build();
     }
 
-    public ReceiptResponse mapToReceiptResponse(Checkout checkout, List<CheckoutItemDetails> checkoutItemDetails) {
-        return ReceiptResponse.builder()
+    public ReceiptResponseDto mapToReceiptResponse(Checkout checkout, List<CheckoutItemDetailsDto> checkoutItemDetailDtos) {
+        return ReceiptResponseDto.builder()
                 .checkoutId(checkout.getId())
                 .paymentDate(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME))
                 .status(checkout.getStatus())
-                .items(checkoutItemDetails)
+                .items(checkoutItemDetailDtos)
                 .priceBeforeDiscount(checkout.getPriceBeforeDiscount())
                 .totalDiscount(checkout.getTotalDiscount())
                 .quantityDiscount(checkout.getQuantityDiscount())
@@ -48,17 +48,17 @@ public class CheckoutMapper {
                 .build();
     }
 
-    public List<CheckoutItem> mapItemsToCheckoutItemInfo(Checkout checkout) {
+    public List<CheckoutItemDto> mapItemsToCheckoutItemInfo(Checkout checkout) {
         if (checkout == null) {
             return Collections.emptyList();
         }
-        List<CheckoutItem> checkoutItem = new ArrayList<>();
+        List<CheckoutItemDto> checkoutItemDto = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : checkout.getItems().entrySet()) {
-            checkoutItem.add(CheckoutItem.builder()
+            checkoutItemDto.add(CheckoutItemDto.builder()
                     .itemName(entry.getKey())
                     .quantity(entry.getValue())
                     .build());
         }
-        return checkoutItem;
+        return checkoutItemDto;
     }
 }

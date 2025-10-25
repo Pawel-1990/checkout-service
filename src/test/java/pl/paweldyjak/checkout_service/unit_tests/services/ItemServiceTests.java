@@ -9,8 +9,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
 import pl.paweldyjak.checkout_service.repositories.ItemRepository;
@@ -46,8 +46,8 @@ public class ItemServiceTests {
         Item item = Utils.buildItem(id);
         when(itemRepository.findAll()).thenReturn(Collections.singletonList(item));
 
-        List<ItemResponse> expectedResponse = Collections.singletonList(Utils.buildItemResponse(id));
-        List<ItemResponse> actualResponse = itemService.getAllItems();
+        List<ItemResponseDto> expectedResponse = Collections.singletonList(Utils.buildItemResponse(id));
+        List<ItemResponseDto> actualResponse = itemService.getAllItems();
 
         assert expectedResponse.equals(actualResponse);
 
@@ -69,7 +69,7 @@ public class ItemServiceTests {
     @Test
     public void testGetItemById() {
         Item item = Utils.buildItem(id);
-        ItemResponse expectedResponse = Utils.buildItemResponse(id);
+        ItemResponseDto expectedResponse = Utils.buildItemResponse(id);
         when(itemRepository.findById(id)).thenReturn(java.util.Optional.of(item));
 
         assert expectedResponse.equals(itemService.getItemById(id));
@@ -80,12 +80,12 @@ public class ItemServiceTests {
 
     @Test
     public void testCreateItem() {
-        ItemRequest itemRequest = Utils.buildItemRequest();
+        ItemRequestDto itemRequestDto = Utils.buildItemRequest();
         Item item = Utils.buildItem(id);
         when(itemRepository.save(any())).thenReturn(item);
-        ItemResponse expectedResponse = Utils.buildItemResponse(id);
+        ItemResponseDto expectedResponse = Utils.buildItemResponse(id);
 
-        assert expectedResponse.equals(itemService.createItem(itemRequest));
+        assert expectedResponse.equals(itemService.createItem(itemRequestDto));
 
         verify(itemRepository, times(1)).save(any());
         verifyNoMoreInteractions(itemRepository);
@@ -93,7 +93,7 @@ public class ItemServiceTests {
 
     @Test
     public void testUpdateItem() {
-        ItemRequest itemRequest = ItemRequest.builder()
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
                 .requiredQuantity(3)
@@ -103,7 +103,7 @@ public class ItemServiceTests {
 
         when(itemRepository.findById(id)).thenReturn(Optional.of(item));
         when(itemRepository.save(any())).thenReturn(item);
-        ItemResponse expectedResponse = ItemResponse.builder()
+        ItemResponseDto expectedResponse = ItemResponseDto.builder()
                 .id(id)
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
@@ -111,7 +111,7 @@ public class ItemServiceTests {
                 .specialPrice(BigDecimal.valueOf(5))
                 .build();
 
-        ItemResponse actualResponse = itemService.updateItem(id, itemRequest);
+        ItemResponseDto actualResponse = itemService.updateItem(id, itemRequestDto);
         assert expectedResponse.equals(actualResponse);
 
         verify(itemRepository, times(1)).findById(id);
@@ -121,7 +121,7 @@ public class ItemServiceTests {
 
     @Test
     public void testPartialUpdateItem() {
-        ItemRequest itemRequest = ItemRequest.builder()
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .specialPrice(BigDecimal.valueOf(5))
                 .build();
         Item item = Utils.buildItem(id);
@@ -129,7 +129,7 @@ public class ItemServiceTests {
         updatedItem.setSpecialPrice(BigDecimal.valueOf(5));
 
         when(itemRepository.findById(id)).thenReturn(Optional.of(item));
-        ItemResponse expectedResponse = ItemResponse.builder()
+        ItemResponseDto expectedResponse = ItemResponseDto.builder()
                 .id(id)
                 .name("Apple")
                 .normalPrice(BigDecimal.valueOf(50))
@@ -138,7 +138,7 @@ public class ItemServiceTests {
                 .build();
         when(itemRepository.save(any())).thenReturn(updatedItem);
 
-        ItemResponse actualResponse = itemService.partialUpdateItem(id, itemRequest);
+        ItemResponseDto actualResponse = itemService.partialUpdateItem(id, itemRequestDto);
 
         assert expectedResponse.equals(actualResponse);
 

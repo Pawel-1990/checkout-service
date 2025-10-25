@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record ItemRequest(
+public record ItemRequestDto(
 
         @NotBlank(message = "Name cannot be blank")
         String name,

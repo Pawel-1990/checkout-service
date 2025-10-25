@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
 import pl.paweldyjak.checkout_service.entities.Checkout;
 import pl.paweldyjak.checkout_service.exceptions.checkout_exceptions.*;
 import pl.paweldyjak.checkout_service.mappers.CheckoutMapper;
@@ -53,29 +53,29 @@ public class CheckoutExceptionsTest {
         Checkout checkout = new Checkout();
         checkout.setItems(Map.of("Apple", 2));
 
-        List<CheckoutItem> checkoutItems = Collections.singletonList(CheckoutItem.builder()
+        List<CheckoutItemDto> checkoutItemDtos = Collections.singletonList(CheckoutItemDto.builder()
                 .itemName("Apple").quantity(5).build());
 
-        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.updateCheckoutItemsForDeleting(checkoutItems, checkout));
+        assertThrows(InaccurateQuantityToDeleteException.class, () -> checkoutService.updateCheckoutItemsForDeleting(checkoutItemDtos, checkout));
     }
 
     @Test
     public void testItemNotFoundInCheckoutException() {
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
-        List<CheckoutItem> checkoutItems =
-                Collections.singletonList(CheckoutItem.builder()
+        List<CheckoutItemDto> checkoutItemDtos =
+                Collections.singletonList(CheckoutItemDto.builder()
                 .itemName("Apple").quantity(5).build());
-        checkoutService.updateCheckoutItemsForDeleting(checkoutItems, new Checkout());
+        checkoutService.updateCheckoutItemsForDeleting(checkoutItemDtos, new Checkout());
 
-        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.updateCheckoutItemsAndPricesForDeleting(1L, checkoutItems));
+        assertThrows(ItemNotFoundInCheckout.class, () -> checkoutService.updateCheckoutItemsAndPricesForDeleting(1L, checkoutItemDtos));
     }
 
     @Test
     public void testItemUnavailableException() {
-        List<CheckoutItem> checkoutItems = Collections.singletonList(CheckoutItem.builder()
+        List<CheckoutItemDto> checkoutItemDtos = Collections.singletonList(CheckoutItemDto.builder()
                 .itemName("Apple").quantity(5).build());
         when(checkoutRepository.findById(1L)).thenReturn(Optional.of(new Checkout()));
 
-        assertThrows(ItemUnavailableException.class, () -> checkoutService.updateCheckoutItemsAndPricesForAdding(1L, checkoutItems));
+        assertThrows(ItemUnavailableException.class, () -> checkoutService.updateCheckoutItemsAndPricesForAdding(1L, checkoutItemDtos));
     }
 }

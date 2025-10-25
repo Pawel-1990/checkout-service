@@ -5,7 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 
 
-public record BundleDiscountPatchRequest(
+public record BundleDiscountPatchRequestDto(
         Long firstItemId,
         Long secondItemId,
 

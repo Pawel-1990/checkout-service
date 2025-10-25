@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.paweldyjak.checkout_service.mappers.ReceiptDataConverter;
-import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
+import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponseDto;
 import pl.paweldyjak.checkout_service.enums.CheckoutStatus;
 
 import java.math.BigDecimal;
@@ -47,7 +47,7 @@ public class Checkout {
 
     @Column(name = "receipt", columnDefinition = "TEXT")
     @Convert(converter = ReceiptDataConverter.class)
-    private ReceiptResponse receipt;
+    private ReceiptResponseDto receipt;
 
     @Column(name = "price_before_discount", precision = 19, scale = 2)
     private BigDecimal priceBeforeDiscount;

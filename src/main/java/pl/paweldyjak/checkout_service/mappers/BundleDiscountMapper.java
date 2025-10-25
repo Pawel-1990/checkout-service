@@ -1,9 +1,8 @@
 package pl.paweldyjak.checkout_service.mappers;
 
 import org.springframework.stereotype.Component;
-import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequest;
-import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponse;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.BundleDiscountResponseDto;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 import pl.paweldyjak.checkout_service.entities.Item;
 
@@ -16,12 +15,12 @@ public class BundleDiscountMapper {
         this.itemMapper = itemMapper;
     }
 
-    public BundleDiscountResponse mapToBundleDiscountResponse(BundleDiscount bundleDiscount) {
+    public BundleDiscountResponseDto mapToBundleDiscountResponse(BundleDiscount bundleDiscount) {
         if (bundleDiscount == null) {
             return null;
         }
 
-        return BundleDiscountResponse.builder()
+        return BundleDiscountResponseDto.builder()
                 .id(bundleDiscount.getId())
                 .firstItem(itemMapper.mapToItemResponse(bundleDiscount.getFirstItem()))
                 .secondItem(itemMapper.mapToItemResponse(bundleDiscount.getSecondItem()))
@@ -29,7 +28,7 @@ public class BundleDiscountMapper {
 
     }
 
-    public BundleDiscount mapToBundleDiscountEntity(BundleDiscountRequest request, Item firstItem, Item secondItem) {
+    public BundleDiscount mapToBundleDiscountEntity(BundleDiscountRequestDto request, Item firstItem, Item secondItem) {
         if (request == null) {
             return null;
         }

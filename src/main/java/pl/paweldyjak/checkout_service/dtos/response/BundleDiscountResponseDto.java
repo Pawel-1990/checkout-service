@@ -5,10 +5,10 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Builder
-public record BundleDiscountResponse(
+public record BundleDiscountResponseDto(
         Long id,
-        ItemResponse firstItem,
-        ItemResponse secondItem,
+        ItemResponseDto firstItem,
+        ItemResponseDto secondItem,
         BigDecimal discountAmount
 ) {
 

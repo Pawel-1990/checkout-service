@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.paweldyjak.checkout_service.dtos.CheckoutItem;
-import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponse;
-import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponse;
+import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
+import pl.paweldyjak.checkout_service.dtos.response.CheckoutResponseDto;
+import pl.paweldyjak.checkout_service.dtos.response.ReceiptResponseDto;
 import pl.paweldyjak.checkout_service.services.CheckoutService;
 
 import java.util.List;
@@ -38,11 +38,11 @@ public class CheckoutController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Checkout found",
-                    content = @Content(schema = @Schema(implementation = CheckoutResponse.class))),
+                    content = @Content(schema = @Schema(implementation = CheckoutResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Checkout not found")
     })
     @GetMapping("/{id}")
-    CheckoutResponse getCheckoutById(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
+    CheckoutResponseDto getCheckoutById(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
         logger.info("Received GET request to get checkout with id: {}", id);
         return checkoutService.getCheckoutById(id);
     }
@@ -54,11 +54,11 @@ public class CheckoutController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Receipt retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = ReceiptResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ReceiptResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Checkout not found or unpaid")
     })
     @GetMapping("/{id}/receipt")
-    ReceiptResponse getReceiptById(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
+    ReceiptResponseDto getReceiptById(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
         logger.info("Received GET request to get receipt with id: {}", id);
         return checkoutService.getReceiptByCheckoutId(id);
     }
@@ -69,9 +69,9 @@ public class CheckoutController {
             description = "Retrieve a list of all checkout sessions."
     )
     @ApiResponse(responseCode = "200", description = "List of all checkouts",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CheckoutResponse.class))))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CheckoutResponseDto.class))))
     @GetMapping
-    List<CheckoutResponse> getAllCheckouts() {
+    List<CheckoutResponseDto> getAllCheckouts() {
         logger.info("Received GET request to get all checkouts");
         return checkoutService.getAllCheckouts();
     }
@@ -82,10 +82,10 @@ public class CheckoutController {
             description = "Initialize a new checkout session with an empty list of items."
     )
     @ApiResponse(responseCode = "201", description = "Checkout created successfully",
-            content = @Content(schema = @Schema(implementation = CheckoutResponse.class)))
+            content = @Content(schema = @Schema(implementation = CheckoutResponseDto.class)))
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CheckoutResponse createCheckout() {
+    public CheckoutResponseDto createCheckout() {
         logger.info("Received POST request to create checkout");
         return checkoutService.createCheckout();
     }
@@ -97,12 +97,12 @@ public class CheckoutController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Payment successful and receipt generated",
-                    content = @Content(schema = @Schema(implementation = ReceiptResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ReceiptResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid state or insufficient data for payment")
     })
     @PostMapping("/{id}/pay")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReceiptResponse pay(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
+    public ReceiptResponseDto pay(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id) {
         logger.info("Received POST request to pay checkout with id: {}", id);
         return checkoutService.pay(id);
     }
@@ -114,12 +114,12 @@ public class CheckoutController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Items added successfully",
-                    content = @Content(schema = @Schema(implementation = CheckoutResponse.class))),
+                    content = @Content(schema = @Schema(implementation = CheckoutResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Checkout not found or item unavailable")
     })
     @PatchMapping("/{id}/add-items")
-    public CheckoutResponse addItemsToCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
-                                               @Valid @RequestBody List<CheckoutItem> items) {
+    public CheckoutResponseDto addItemsToCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
+                                                  @Valid @RequestBody List<CheckoutItemDto> items) {
         logger.info("Received PATCH request to add items to checkout with id: {}", id);
         return checkoutService.updateCheckoutItemsAndPricesForAdding(id, items);
     }
@@ -131,12 +131,12 @@ public class CheckoutController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Items removed successfully",
-                    content = @Content(schema = @Schema(implementation = CheckoutResponse.class))),
+                    content = @Content(schema = @Schema(implementation = CheckoutResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Checkout not found or item not found in checkout")
     })
     @PatchMapping("/{id}/delete-items")
-    public CheckoutResponse deleteItemsFromCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
-                                                    @Valid @RequestBody List<CheckoutItem> items) {
+    public CheckoutResponseDto deleteItemsFromCheckout(@Parameter(description = "Unique ID of the checkout", example = "1") @PathVariable Long id,
+                                                       @Valid @RequestBody List<CheckoutItemDto> items) {
         logger.info("Received PATCH request to delete items from checkout with id: {}", id);
         return checkoutService.updateCheckoutItemsAndPricesForDeleting(id, items);
     }

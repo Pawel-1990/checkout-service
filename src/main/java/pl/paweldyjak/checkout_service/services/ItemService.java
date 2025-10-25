@@ -2,8 +2,8 @@ package pl.paweldyjak.checkout_service.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.paweldyjak.checkout_service.dtos.request.ItemRequest;
-import pl.paweldyjak.checkout_service.dtos.response.ItemResponse;
+import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
+import pl.paweldyjak.checkout_service.dtos.response.ItemResponseDto;
 import pl.paweldyjak.checkout_service.entities.Item;
 import pl.paweldyjak.checkout_service.exceptions.item_exceptions.ItemNotFoundException;
 import pl.paweldyjak.checkout_service.mappers.ItemMapper;
@@ -27,7 +27,7 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemResponse> getAllItems() {
+    public List<ItemResponseDto> getAllItems() {
         return itemRepository.findAll().stream()
                 .map(itemMapper::mapToItemResponse)
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemResponse getItemById(Long itemId) {
+    public ItemResponseDto getItemById(Long itemId) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
         return itemMapper.mapToItemResponse(existingItem);
@@ -61,25 +61,25 @@ public class ItemService {
         return itemRepository.findAllAvailableItemNames();
     }
 
-    public ItemResponse createItem(ItemRequest request) {
+    public ItemResponseDto createItem(ItemRequestDto request) {
         Item newItem = itemMapper.mapToItemEntity(request);
         validatePricesAndRequiredQuantity(newItem);
         Item savedItem = itemRepository.save(newItem);
         return itemMapper.mapToItemResponse(savedItem);
     }
 
-    public ItemResponse updateItem(Long itemId, ItemRequest itemRequest) {
+    public ItemResponseDto updateItem(Long itemId, ItemRequestDto itemRequestDto) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
-        existingItem = itemMapper.updateItemEntity(existingItem, itemRequest);
+        existingItem = itemMapper.updateItemEntity(existingItem, itemRequestDto);
         validatePricesAndRequiredQuantity(existingItem);
         Item updatedItem = itemRepository.save(existingItem);
 
         return itemMapper.mapToItemResponse(updatedItem);
     }
 
-    public ItemResponse partialUpdateItem(Long itemId, ItemRequest patchRequest) {
+    public ItemResponseDto partialUpdateItem(Long itemId, ItemRequestDto patchRequest) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
 
