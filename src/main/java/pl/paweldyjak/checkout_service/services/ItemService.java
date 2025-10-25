@@ -1,5 +1,6 @@
 package pl.paweldyjak.checkout_service.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.paweldyjak.checkout_service.dtos.request.ItemRequestDto;
@@ -15,16 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
-
-
-    public ItemService(ItemRepository itemRepository, ItemMapper itemMapper) {
-        this.itemRepository = itemRepository;
-        this.itemMapper = itemMapper;
-    }
 
     @Transactional(readOnly = true)
     public List<ItemResponseDto> getAllItems() {

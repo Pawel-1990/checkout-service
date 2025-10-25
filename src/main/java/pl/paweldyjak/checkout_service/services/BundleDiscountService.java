@@ -1,6 +1,7 @@
 package pl.paweldyjak.checkout_service.services;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.paweldyjak.checkout_service.dtos.request.BundleDiscountPatchRequestDto;
@@ -18,19 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class BundleDiscountService {
 
     private final BundleDiscountRepository bundleDiscountRepository;
     private final BundleDiscountMapper bundleDiscountMapper;
     private final ItemService itemService;
-
-
-    public BundleDiscountService(BundleDiscountRepository bundleDiscountRepository, BundleDiscountMapper bundleDiscountMapper,
-                                 ItemService itemService) {
-        this.bundleDiscountRepository = bundleDiscountRepository;
-        this.bundleDiscountMapper = bundleDiscountMapper;
-        this.itemService = itemService;
-    }
 
     public List<BundleDiscountResponseDto> getAllBundledDiscounts() {
         return bundleDiscountRepository.findAll().stream()

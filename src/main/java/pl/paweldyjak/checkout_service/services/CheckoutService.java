@@ -1,5 +1,6 @@
 package pl.paweldyjak.checkout_service.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.paweldyjak.checkout_service.dtos.CheckoutItemDto;
@@ -21,18 +22,12 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class CheckoutService {
     private final CheckoutRepository checkoutRepository;
     private final ItemService itemService;
     private final CheckoutMapper checkoutMapper;
     private final BundleDiscountService bundleDiscountService;
-
-    public CheckoutService(CheckoutRepository checkoutRepository, ItemService itemService, CheckoutMapper checkoutMapper, BundleDiscountService bundleDiscountService) {
-        this.checkoutRepository = checkoutRepository;
-        this.itemService = itemService;
-        this.checkoutMapper = checkoutMapper;
-        this.bundleDiscountService = bundleDiscountService;
-    }
 
     @Transactional(readOnly = true)
     public List<CheckoutResponseDto> getAllCheckouts() {
