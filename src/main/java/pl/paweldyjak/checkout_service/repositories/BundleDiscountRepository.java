@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import pl.paweldyjak.checkout_service.entities.BundleDiscount;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public interface BundleDiscountRepository extends JpaRepository<BundleDiscount, Long> {
 
+    @Transactional
     @Modifying
     @Query("DELETE FROM BundleDiscount bd WHERE " +
             "(bd.firstItem.id = :itemId OR bd.secondItem.id = :itemId)")
